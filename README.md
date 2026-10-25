@@ -1,5 +1,8 @@
 # Droidshooter · Gamira client
 
+**Status: experimental client integration.** The native Unreal client still needs
+an engine build and live matchmaking validation.
+
 Client integration patches for [Droidshooter](https://github.com/googleforgames/global-multiplayer-demo),
 with platform authentication and direct Gamira profile, region and matchmaking requests.
 
@@ -61,3 +64,9 @@ Unreal client still requires an engine build and live matchmaking validation.
 
 Original sample: Google and contributors, Apache-2.0. See [CREDITS.md](CREDITS.md).
 Unreal Engine and upstream dependencies retain their own terms and notices.
+
+## Licence
+
+Gamira’s client integration changes are licensed under [Apache-2.0](LICENSE).
+See [NOTICE.md](NOTICE.md) for upstream attribution and modification notices.
+Engine dependencies and third-party assets retain their own terms.

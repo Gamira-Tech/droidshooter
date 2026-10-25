@@ -1,13 +1,14 @@
 diff --git a/global-multiplayer-demo/game/GameLauncher/README.md b/global-multiplayer-demo/game/GameLauncher/README.md
-index 59a760292d3664d2d9b6726f78f4dbba3efba050..840d24440c00bbdeb9414e39e5a0174f5ccefd07 100644
+index 59a760292d3664d2d9b6726f78f4dbba3efba050..59bf2d24f5463e83ee6289249f63daa8e7a90df4 100644
 --- a/global-multiplayer-demo/game/GameLauncher/README.md
 +++ b/global-multiplayer-demo/game/GameLauncher/README.md
-@@ -1,25 +1,6 @@
+@@ -1,25 +1,8 @@
 -## Generic game launcher with "Sign-in with google" authentication.
 +# Droidshooter client launcher
  
 -To run the launcher locally:
--
++Modified by Gamira contributors in 2026 for client authentication and matchmaking.
+ 
 -```shell
 -go run main.go
 -```
@@ -34,10 +35,10 @@ index 59a760292d3664d2d9b6726f78f4dbba3efba050..840d24440c00bbdeb9414e39e5a0174f
 +Run `go build -o launcher .` and launch from this directory.
 +No administrator keys or backend services are included in this client package.
 diff --git a/global-multiplayer-demo/game/GameLauncher/app.ini.sample b/global-multiplayer-demo/game/GameLauncher/app.ini.sample
-index 87aea5ef2b4c7c037dd0a5c4a59a0625aa767e83..edc29e95dc1c9fedb12b7d28a440242b02585fa3 100644
+index 87aea5ef2b4c7c037dd0a5c4a59a0625aa767e83..187a0061f2832d00dac71db3de2872faf4a0aed0 100644
 --- a/global-multiplayer-demo/game/GameLauncher/app.ini.sample
 +++ b/global-multiplayer-demo/game/GameLauncher/app.ini.sample
-@@ -1,19 +1,6 @@
+@@ -1,19 +1,7 @@
 -# Copyright 2023 Google Inc. All Rights Reserved.
 -#
 -# Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +55,7 @@ index 87aea5ef2b4c7c037dd0a5c4a59a0625aa767e83..edc29e95dc1c9fedb12b7d28a440242b
 -
 -frontend_api = http://${IP_ADDRESS}.sslip.io
 -callback_listen_port = 8082
++; Modified by Gamira contributors in 2026 for client authentication and matchmaking.
 +platform_url = http://localhost:30090
 +gamira_url = http://localhost:30080
 +callback_listen_port = 8083
@@ -61,16 +63,17 @@ index 87aea5ef2b4c7c037dd0a5c4a59a0625aa767e83..edc29e95dc1c9fedb12b7d28a440242b
  [windows]
  binary = .\DroidshooterClient.exe
 diff --git a/global-multiplayer-demo/game/GameLauncher/main.go b/global-multiplayer-demo/game/GameLauncher/main.go
-index 4ce9cabf50dfe60dc582c30b84b6a682d9455d78..1a0cd0146f63640a1b17e5b52ba0b109f2527cce 100644
+index 4ce9cabf50dfe60dc582c30b84b6a682d9455d78..3dd45d186cb285bcaff295fcedd45c7edb1593e2 100644
 --- a/global-multiplayer-demo/game/GameLauncher/main.go
 +++ b/global-multiplayer-demo/game/GameLauncher/main.go
-@@ -1,4 +1,4 @@
+@@ -1,4 +1,5 @@
 -// Copyright 2023 Google Inc. All Rights Reserved.
 +// Copyright 2023 Google LLC All Rights Reserved.
++// Modified by Gamira contributors in 2026 for client authentication and matchmaking.
  //
  // Licensed under the Apache License, Version 2.0 (the "License");
  // you may not use this file except in compliance with the License.
-@@ -15,14 +15,24 @@
+@@ -15,14 +16,24 @@
  package main
  
  import (
@@ -95,7 +98,7 @@ index 4ce9cabf50dfe60dc582c30b84b6a682d9455d78..1a0cd0146f63640a1b17e5b52ba0b109
  	"strings"
  	"time"
  
-@@ -37,206 +47,379 @@ import (
+@@ -37,206 +48,379 @@ import (
  )
  
  var (
@@ -588,7 +591,7 @@ index 4ce9cabf50dfe60dc582c30b84b6a682d9455d78..1a0cd0146f63640a1b17e5b52ba0b109
  	switch runtime.GOOS {
  	case "linux":
  		err = exec.Command("xdg-open", url).Start()
-@@ -254,13 +437,10 @@ func openBrowser(url string) {
+@@ -254,13 +438,10 @@ func openBrowser(url string) {
  
  func saveToken(token string) {
  	dirname, err := os.UserHomeDir()
@@ -603,7 +606,7 @@ index 4ce9cabf50dfe60dc582c30b84b6a682d9455d78..1a0cd0146f63640a1b17e5b52ba0b109
  	if err != nil {
  		log.Fatal(err)
  	}
-@@ -268,27 +448,24 @@ func saveToken(token string) {
+@@ -268,27 +449,24 @@ func saveToken(token string) {
  
  func loadToken() bool {
  	dirname, err := os.UserHomeDir()
@@ -638,27 +641,28 @@ index 4ce9cabf50dfe60dc582c30b84b6a682d9455d78..1a0cd0146f63640a1b17e5b52ba0b109
  		return false
  	}
 diff --git a/global-multiplayer-demo/game/README.md b/global-multiplayer-demo/game/README.md
-index b27f3f3c3ff71c7394e12f72e68ba2a53d44b835..c41d968976f8805491473abec7ef7dbc690b5fd2 100644
+index b27f3f3c3ff71c7394e12f72e68ba2a53d44b835..a91ed50d017d5abcbd4685bf1aa9f45e5d2df13f 100644
 --- a/global-multiplayer-demo/game/README.md
 +++ b/global-multiplayer-demo/game/README.md
-@@ -1,34 +1,13 @@
+@@ -1,34 +1,15 @@
 -# Droidshooter
 +# Droidshooter client with Gamira
  
 -This is the Unreal Engine 5.1.0 project for the DroidShooter game!
++Modified by Gamira contributors in 2026 for client authentication and matchmaking.
+ 
+-## Local Builds
 +In `GameLauncher/`, copy `app.ini.sample` to `app.ini`. Set `gamira_url` and
 +`platform_url` to the public Gamira API and authentication platform base URLs.
 +The platform URL does not include `/api/v1`. Set the executable path for your OS.
 +The game client talks directly to Gamira; no frontend proxy or local cluster
 +is included or required. Services and game servers are operated separately.
  
--## Local Builds
+-## Dedicated Game Server Docker Image
 +Build the client with the upstream Unreal Engine 5 workflow. In `GameLauncher/`,
 +run `go build -o launcher .` and start `./launcher` from that directory.
 +No admin credentials belong in the client configuration.
  
--## Dedicated Game Server Docker Image
--
 -```shell
 -docker build . -t droidshooter-server
 -```
@@ -687,10 +691,16 @@ index b27f3f3c3ff71c7394e12f72e68ba2a53d44b835..c41d968976f8805491473abec7ef7dbc
 -See the top level [README.md](../README.md#game-client) game client section for full launch instructions.
 +Upstream: https://github.com/googleforgames/global-multiplayer-demo (Apache-2.0).
 diff --git a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp
-index 30a679114112b2ecb7d80f7a12b4d9dc5ca5f7f6..3c0a52781d5abab70ab90c528248f8636469f409 100644
+index 30a679114112b2ecb7d80f7a12b4d9dc5ca5f7f6..cbbae2e550a9dcb57e88d5b944d22c11f1668684 100644
 --- a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp
 +++ b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp
-@@ -19,275 +19,219 @@
+@@ -1,4 +1,5 @@
+ // Copyright 2023 Google LLC
++// Modified by Gamira contributors in 2026 for client authentication and matchmaking.
+ //
+ // Licensed under the Apache License, Version 2.0 (the "License");
+ // you may not use this file except in compliance with the License.
+@@ -19,275 +20,219 @@
  #include "Components/TextBlock.h"
  #include "Components/EditableTextBox.h"
  #include "Components/Button.h"
@@ -1139,10 +1149,16 @@ index 30a679114112b2ecb7d80f7a12b4d9dc5ca5f7f6..3c0a52781d5abab70ab90c528248f863
 +    if (GetWorld()) GetWorld()->GetTimerManager().SetTimer(MemberTimerHandle, this, &UDroidshooterIntroUserWidget::PollTicket, 0.5f, false);
  }
 diff --git a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h
-index 5ffe5ff04ec40b4b89e98d14f44c35eeaa6d8549..c18f6090ff08f09afb491024bce2c6a671594231 100644
+index 5ffe5ff04ec40b4b89e98d14f44c35eeaa6d8549..d26661c665191e51473290aea4191127e0e7f575 100644
 --- a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h
 +++ b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h
-@@ -17,7 +17,7 @@
+@@ -1,4 +1,5 @@
+ // Copyright 2023 Google LLC
++// Modified by Gamira contributors in 2026 for client authentication and matchmaking.
+ //
+ // Licensed under the Apache License, Version 2.0 (the "License");
+ // you may not use this file except in compliance with the License.
+@@ -17,7 +18,7 @@
  #include "CoreMinimal.h"
  #include "TimerManager.h" 
  #include "Blueprint/UserWidget.h"
@@ -1151,7 +1167,7 @@ index 5ffe5ff04ec40b4b89e98d14f44c35eeaa6d8549..c18f6090ff08f09afb491024bce2c6a6
  #include "DroidshooterIntroUserWidget.generated.h"
  
  /**
-@@ -31,6 +31,8 @@ class DROIDSHOOTER_API UDroidshooterIntroUserWidget : public UUserWidget
+@@ -31,6 +32,8 @@ class DROIDSHOOTER_API UDroidshooterIntroUserWidget : public UUserWidget
  public:
  
  	void NativePreConstruct();
@@ -1160,7 +1176,7 @@ index 5ffe5ff04ec40b4b89e98d14f44c35eeaa6d8549..c18f6090ff08f09afb491024bce2c6a6
  
  	UFUNCTION(BlueprintCallable)
  	void AuthenticateCall(const FString& frontendApi, const FString& accessToken);
-@@ -43,10 +45,6 @@ public:
+@@ -43,10 +46,6 @@ public:
  
  	void ProcessProfileResponse(const FString& ResponseContent);
  	void ProcessGameserverResponse(const FString& ResponseContent);
@@ -1171,7 +1187,7 @@ index 5ffe5ff04ec40b4b89e98d14f44c35eeaa6d8549..c18f6090ff08f09afb491024bce2c6a6
  
  	// Server IP/Port editboxes
  	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-@@ -58,6 +56,9 @@ public:
+@@ -58,6 +57,9 @@ public:
  	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
  	class UTextBlock* NameTextBlock;
  
@@ -1181,7 +1197,7 @@ index 5ffe5ff04ec40b4b89e98d14f44c35eeaa6d8549..c18f6090ff08f09afb491024bce2c6a6
  	/** Saving token for further queries */
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
  	FString GlobalAccessToken;
-@@ -75,8 +76,13 @@ public:
+@@ -75,8 +77,13 @@ public:
  	FString ServerPortValue;
  
  private:

@@ -6,7 +6,7 @@
   "commit": "b5465e81c9a5121660182702ca81a84358658c58",
   "prefix": "global-multiplayer-demo",
   "subdir": "",
-  "patch_sha256": "6027fccde34a5e40e4f30c6f1f9dfd7c32e8b05f35d63de7e12515f7b8f8152c",
+  "patch_sha256": "4ea79dc7bb3458af92b52c1c49d65cd2abdab865cc309266a3e2af73df8ca237",
   "verified": true,
   "sanitized": [],
   "removed": [],
@@ -792,11 +792,11 @@
       "executable": false
     },
     "global-multiplayer-demo/game/GameLauncher/README.md": {
-      "sha256": "211f9217a63db6e303d9aeb8f899e6ef5b16f7aa2fc605b4eae9373a1685ea66",
+      "sha256": "e514762c9b25bda13765852ffa330ac3d66074af68da7487f117e1ba94fecf36",
       "executable": false
     },
     "global-multiplayer-demo/game/GameLauncher/app.ini.sample": {
-      "sha256": "9b63df5825b3e012136ca70916557f92929b76e938460d4d86523968f6f61fa7",
+      "sha256": "824403f3bd5ce6071a69d13f0046163bc655b97e77f8ae19b87175f34345b225",
       "executable": false
     },
     "global-multiplayer-demo/game/GameLauncher/assets/header.png": {
@@ -816,7 +816,7 @@
       "executable": false
     },
     "global-multiplayer-demo/game/GameLauncher/main.go": {
-      "sha256": "f75e0184e26768688ce850f46ace33e19ba395d8d1aa2315bbc951227c87b183",
+      "sha256": "7b4f600cfc98f14d73201a41ef4ddb6fca9d8b56124ac8b00e00a60b438e4021",
       "executable": false
     },
     "global-multiplayer-demo/game/Platforms/HoloLens/Config/HoloLensEngine.ini": {
@@ -860,7 +860,7 @@
       "executable": false
     },
     "global-multiplayer-demo/game/README.md": {
-      "sha256": "81ba9d0bccf9e5e04fafd8740e4ab467b736af0e15d36610df1376135d46310c",
+      "sha256": "84bfe6aceaedebd24bfab2caf24cf61068a1ec12d841fa6479369955d049a59e",
       "executable": false
     },
     "global-multiplayer-demo/game/Source/Droidshooter/Droidshooter.Build.cs": {
@@ -892,11 +892,11 @@
       "executable": false
     },
     "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp": {
-      "sha256": "6d5ecd20b13224856f4d4777c1c2890725f0858775cd6b1349c9266ce44dca77",
+      "sha256": "cbf5473092dacc9b0fb26fa496717d76fa32a4cd68a85bbced8cd9887d0fed36",
       "executable": false
     },
     "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h": {
-      "sha256": "25e7412d1b8a9b6466eb0203292f07dc0f719012213e9bfbed70ff6d6334f527",
+      "sha256": "27d1ada618d02f7288ee6562a8f03152b30206aaf6f00804306a83387c4a5a10",
       "executable": false
     },
     "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterMainHUD.cpp": {

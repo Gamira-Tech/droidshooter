@@ -9,3 +9,5 @@ Keep the original upstream licence and third-party notices with fetched sources.
 
 Keep the licences of downloaded tools and build dependencies with
 any distributed binaries.
+
+Full licence text and modification notices: [LICENSE](LICENSE), [NOTICE.md](NOTICE.md).
