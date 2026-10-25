@@ -1,0 +1,983 @@
+{
+  "format": 1,
+  "scope": "client-only",
+  "demo": "unreal-engine",
+  "url": "https://github.com/googleforgames/global-multiplayer-demo.git",
+  "commit": "b5465e81c9a5121660182702ca81a84358658c58",
+  "prefix": "global-multiplayer-demo",
+  "subdir": "",
+  "patch_sha256": "6027fccde34a5e40e4f30c6f1f9dfd7c32e8b05f35d63de7e12515f7b8f8152c",
+  "verified": true,
+  "sanitized": [],
+  "removed": [],
+  "files": {
+    "global-multiplayer-demo/LICENSE": {
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/.gitignore": {
+      "sha256": "da38c28ff645f0ab2aa9a5a9421ecc5827fa890c898ef0929a135fda08209a6c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/DroidShooterLogo.png": {
+      "sha256": "ef5e56e10bc08c23300a450e0d0bfbeab6298f633f2338a5decb5149b4444423",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/Map.blend": {
+      "sha256": "1ead62827731d4929098e3ff36dcc47024e0ef79de2a96f03540af8be66502b5",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/Player-HUD-Charge.png": {
+      "sha256": "23800d8070367959bfc565ab59816a1ff877b3d82d84d8ab675fa79339897aed",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/Player-HUD-Life.png": {
+      "sha256": "f6ce0205db7ca2f3e4e93632592a3bdabb5f2720e86e22355dcebcc108ca9580",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/Player.blend": {
+      "sha256": "b5de64b5c7b43523005a8506839d32da4d3f6d89694e0eebbe8dca9b5fef884f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/agones.png": {
+      "sha256": "2dee4022b7573b69345bbc9942dda31ab104c38df2f68e07b1462e1380e5520e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/gfg.png": {
+      "sha256": "cdef4b9dbcac2f3b0e865bc0a525ae972865f1da307fc0db949aff3e8aa9f66f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Assets/om.png": {
+      "sha256": "96c560d622541f78a6e73b18d27f4f1af27b971bd8e247f010880862f18f9121",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Config/DefaultEditor.ini": {
+      "sha256": "19a86e9eb02ffab0119612391db9c84e3280e22ea4533e8009cfea043c46bb9b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Config/DefaultEngine.ini": {
+      "sha256": "e4cde2df39f3b307b37b2f2ba699c2c6d27b3830821cf6c32c021127a30222d4",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Config/DefaultGame.ini": {
+      "sha256": "a7855e9c4693620e4230ae87baaa8d615eec8c6890fb18b29b08b45c009e50ad",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Config/DefaultInput.ini": {
+      "sha256": "2387240aa899bb754497fdff9ce2009fe21c8d982f7ea625cc5714706970a6d8",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Blast/BlastFlyFX.uasset": {
+      "sha256": "74d291b7ef82f8df7963681885b973ef8532b4d683c30d8993f4eb917b804a9f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Blast/BlastHitFX.uasset": {
+      "sha256": "751ddf421a6cc8601b38be283f740df2e96ce2a4f18ba361b17ecc8481f72f71",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Blast/DS_BlastBP.uasset": {
+      "sha256": "7188acdc45f7b3e782ff1cdcab3c425e2eb15aedb10edb3e9caac13d208ddb2b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Level.umap": {
+      "sha256": "f00ac9df9c52aa0e2d91f9c14969c59729baf6c6a526d26accf2ce813b099967",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Level_sharedassets/Layer1_LayerInfo.uasset": {
+      "sha256": "e8dd50e6d92724268453661f64304eb1917402c239ac3179942911cacababc96",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Level_sharedassets/Layer2_LayerInfo.uasset": {
+      "sha256": "d8698185beac86276854bfcad852bff81a4670c24c59aa48e281db9fe606a83a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Level_sharedassets/Layer3_LayerInfo.uasset": {
+      "sha256": "b1b4fc671455c004f55e14b16788eca333237a17e426d37bd4c0654d29a8d39e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Level_sharedassets/Layer4_LayerInfo.uasset": {
+      "sha256": "23f97aecfd78a588be2b2ceb62d89aeda2eec80458d12a8fb3ccbc6efa28d34a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSTextures/Black.uasset": {
+      "sha256": "f16b0312ae5edaeea80f1f7cfb4e42b3920787decc497f083422026d6d9fc166",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSTextures/BlackPlaceholder.uasset": {
+      "sha256": "950f8e2308afc5a1e25fef7c15f4fe82f498eace610c6cfcc2ccf87b131167c8",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSTextures/FlatNormal.uasset": {
+      "sha256": "805b2f7968b74568ba8a134265a744ea0d1a9da319642f594ba64ca3e1330ecf",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSTextures/Placeholder.uasset": {
+      "sha256": "686b0cc9109f45e6e243e674241104474988a1034d0b2dc8fb0246bff726784c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSTextures/Placeholder_Normal.uasset": {
+      "sha256": "c37019d9104752509eef7d72bb3168fe551b59801d26a4e4ac71fdb2f626a351",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSTextures/White.uasset": {
+      "sha256": "abfd6d3e44d2929a519c9d41e5190cf987af9353934790355262a4e722b70e71",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSTextures/WhitePlaceholder.uasset": {
+      "sha256": "820a514fa16075d4a92b4f3138a27324fc57b4c4c2ede3e6dc07a1bc13c5e0b1",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSVTTextures/BlackPlaceholder.uasset": {
+      "sha256": "0476e16bf71aaafb764071031da889d3622f78d1ad289fad2393dc1cecc58294",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSVTTextures/DefaultDiffuse.uasset": {
+      "sha256": "42fbfd153354ddeb241cb311a8a48c28745c320396ec3ceb67ea6883d0cd4712",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSVTTextures/Placeholder_Normal.uasset": {
+      "sha256": "44c047f0cfc265404f3bdafa9b886ab4b31771f0c0023f65369a1f17a40c4a93",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/MSVTTextures/WhitePlaceholder.uasset": {
+      "sha256": "4861e6e92f0d675cad3e79d5568e75663a9e2511439fffc215cad80f3d945266",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Billboard_Material/M_MS_Billboard_Material.uasset": {
+      "sha256": "db2694ba185124533607cdbe98873fc2d844e62a2ac5893e7f1f0e7f6ada5772",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Decal_Material/MF_QuixelDecalPOM.uasset": {
+      "sha256": "333398783d9b472cfee5aa4fb6879fbfbc062930a80d6f39a65e0396440a911b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Decal_Material/M_MS_Decal_Material.uasset": {
+      "sha256": "d6f7e6e3f88fadece1ecae225e4e4f74f89a4d4f900aaa2099028024cc94a1f7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Decal_Material_VT/MF_QuixelDecalPOM.uasset": {
+      "sha256": "aeabd4a3c3cd9cf8b9ad5c3884d69b71d9b9da4c0f50615ab939f5104cb71abc",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Decal_Material_VT/M_MS_Decal_Material_VT.uasset": {
+      "sha256": "9521bc2d302ba6591072b8889ce4c6fe1d97b375c4f96d0b10f9ae37e045b0ef",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Fuzz_Material/Functions/MF_Fuzz.uasset": {
+      "sha256": "0b73d8d1b77b8d03ed310bf102daa60709d61c32bbff5dd619d452d348033420",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Fuzz_Material/Functions/MF_Tiling.uasset": {
+      "sha256": "b00d32a98567128f89dd4eedb7cf4c1b5237af760ef0e2a76b374bc5f3299fe0",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Fuzz_Material/M_MS_Default_Fuzz_Material.uasset": {
+      "sha256": "9dd8ffd8b42826c8a177a37f27d66623e0d47815ab6290109d4c622b159ba801",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Fuzz_Material_VT/Functions/MF_Fuzz.uasset": {
+      "sha256": "ad4d738ffed4223f2a7643fdfe65e52082aab65361ba9687d6943e967a22dc9c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Fuzz_Material_VT/Functions/MF_Tiling.uasset": {
+      "sha256": "3301f996099716d007cf9c028e58e919d681c3f97cb12c02c538652f7b5c0563",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Fuzz_Material_VT/M_MS_Default_Fuzz_Material_VT.uasset": {
+      "sha256": "2f486098681eecc75ed7bab115a53e8a948808713a55571ed25ce4c2f40ed3d5",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/Functions/MF_DetailNormalTiling.uasset": {
+      "sha256": "f9054f78dec74ddb6ce8ec1bee135e5e9845f41af6d21d571ed57aa988fc1240",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/Functions/MF_Displacement.uasset": {
+      "sha256": "47ae8082e518c40dd3d8f59101b5efce70523e36f75a1a75cacf44eb67b8044a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/Functions/MF_Fuzz.uasset": {
+      "sha256": "76d48321c96d130a15d9656e3f0fa42f48b0cb3423f4d3b70d5ac910b1dccf22",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/Functions/MF_MapAdjustments.uasset": {
+      "sha256": "09a111050729839f0300e92829e81c22bb339648cf456a1f3c3d64d22c12c127",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/Functions/MF_ObjAdjustments.uasset": {
+      "sha256": "262c7e811d7730e23d69de33ddade16faaafa293655f2bd77aa49afb40b7d239",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/Functions/MF_Tiling.uasset": {
+      "sha256": "0e42cc3c97c6fa8f117d615adc89b3dac3ceebc933720232d13c448c241c9c3f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/Functions/MF_Transmission.uasset": {
+      "sha256": "12b7bd3e2c8567f0c63386c4810a8a14a1a9074c993e98d2b24b2e23c7f3f784",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material/M_MS_Default_Material.uasset": {
+      "sha256": "1aa3fcea8aa693799d4e85506cd82783e980dffa3e279b3317926f9c3f8c4778",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_DetailNormalTiling.uasset": {
+      "sha256": "9f3a6a91df5ba79f44fd70e5253a3b499c37d3fe61ac3e1fced54b5958d9d153",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Displacement.uasset": {
+      "sha256": "8e161a89b51b4b5845f64f4e8f520a5e2213048b3d3fde77e87ded56e2f13375",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Fuzz.uasset": {
+      "sha256": "1df8de6f22356dc039b655f0c4fe3c91def11bfe17a3f7b1759c2c72f608394d",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_MapAdjustments.uasset": {
+      "sha256": "39c96fda0fed73e5989d5b540a07755749bae8437f0be49d3eef348733fe777d",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_ObjAdjustments.uasset": {
+      "sha256": "497387b5b2f4ba0951cd12e83db2fed58f17a70617d526e806dc708bffe3fd01",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Tiling.uasset": {
+      "sha256": "1569e8cd18c43700e1e52ebf496283121d04be55870b473428b14bc07afa2b23",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Transmission.uasset": {
+      "sha256": "a69d6b5e096292f376c624512d08616956a5025d3a3290d8b0b42978aca05a48",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Material_VT/M_MS_Default_Material_VT.uasset": {
+      "sha256": "dffe7b3217491d0fe9a957728b6fb92c8a8c8dd241011c289731e7ef947fcf0e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Transmission_Material/Functions/MF_SSSObjAdjustments.uasset": {
+      "sha256": "0d4d1eaeff8ff87221a17db80dee256162539eae4cd1df937e82055d247293e7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Transmission_Material/M_MS_Default_Transmission_Material.uasset": {
+      "sha256": "22d6fb348749d3bf7dbf9fefc0a9539004956101046e54c71b13459f2a89d449",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Transmission_Material_VT/Functions/MF_SSSObjAdjustments.uasset": {
+      "sha256": "3ff98b147257cf93591d9c966219457f85f2d3f0c367d569ca3c49bb715e64c9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Default_Transmission_Material_VT/M_MS_Default_Transmission_Material_VT.uasset": {
+      "sha256": "1fcd0f1bd1791eb0b9834b6706d0ea305c0e13f6c219cac1fc8f09071c11bdc7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Foliage_Material/Functions/MF_Translucency.uasset": {
+      "sha256": "68040ec23a66c97b3119da7c3ec8db0499971f2695efa541bc3cd70fd596822e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Foliage_Material/MF_Translucency.uasset": {
+      "sha256": "1c5daf4b6f5272b1d3313cfaf0fa8d66fa0a1e68bb924c916bf436d00f71612f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Foliage_Material/M_MS_Foliage_Material.uasset": {
+      "sha256": "2d78b3cf97fb497d96cf93166f16d47c6742ae7e22b2213dee84e03e3b576dc9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_FrameBlend.uasset": {
+      "sha256": "a1b9cb7da1cd77d7125c29fff794f2c6f34150a37f8c208837ccd0e2e301e595",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_FrameTextures.uasset": {
+      "sha256": "85cc10f82a7153ed9b2631e61b0bd880a2bd9a7f9967aa466d46b131bdb36bf2",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_Imperfection.uasset": {
+      "sha256": "358c4e93c8dafd7fba0bef4129df5e136b2ca661bb5b408d9a00c6984fbdac50",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_Refraction.uasset": {
+      "sha256": "b052321aca237d13a78a4888803d1288ab3c802c3db9c64b09b050e52cafe2c7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_TranslucencyEmission.uasset": {
+      "sha256": "064edcfcbe94bd9bb1d5bbf6c482ee1e15c1646dd721744fcbe03da2ef041fdc",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_TranslucencyMetallic.uasset": {
+      "sha256": "0281fe07bef5cf2d5f5c7dff47de0f1f060ddd58fd1b5f4f10e9c647d3194128",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_WindowImperfection.uasset": {
+      "sha256": "0c0271e31794907461cc54129a93eb42b41c2db1b14bb893c566275559bbed87",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Functions/MF_WindowNormalStrength.uasset": {
+      "sha256": "2aaf269549ffbe46ac21553ff60ae0f7ae0d51172a87d8fc35d3fcf282468b9e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/MI_MS_Glass_Material_Inst.uasset": {
+      "sha256": "0c28eb0923e920ea69c0bdd1572d6ebfa8944955bc9247f9825c8b95317ca4ce",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/M_MS_Glass_Material.uasset": {
+      "sha256": "24944ffbfb9b0f9a3ce0effdf8f0cecbd7a9c82072e430666e5d60cd13bd8e97",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Textures/Black.uasset": {
+      "sha256": "d14dd3614c95d5e672985a70c2ef95cc8c60cd29c3f49366ba5a79bb6c86a935",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Textures/FlatNormal.uasset": {
+      "sha256": "6e6d47705bb89a3e7f864bf0dcda41b16d0b4cf80a5a553ef3ec889baaaa266d",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Glass_Material/Textures/White.uasset": {
+      "sha256": "c3476cb4ad76a44eb4c1af607210699c815b72ed51ada1a5b33d20b2dc742422",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_ImperfectionDecal_Material/M_MS_ImperfectionDecal_Material.uasset": {
+      "sha256": "f73a1ec61a9f743714b65a7a5ce982c461d942c2ee85e12b3ac3812e951035c9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_ImperfectionDecal_Material_VT/M_MS_ImperfectionDecal_Material_VT.uasset": {
+      "sha256": "3c4c45dd29934fbc300be03814e7bdefc1b29b7178f50d2002f9fca6f66a14f8",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Imperfection_Material/M_MS_Imperfection_Material.uasset": {
+      "sha256": "7a1abcd66444c05291a4ec88a86d0e6054540182633b3158139418a78ea1e628",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Imperfection_Material/M_MS_Imperfection_Material_Var.uasset": {
+      "sha256": "8200dc38cfa33bc3a0e19a3f6361225068e0dd58418105150e687d88254311db",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Imperfection_Material_VT/M_MS_Imperfection_Material_VT.uasset": {
+      "sha256": "208870cede14349db0c675843c15bc88a0a2b98addac591349b89988d46d45b2",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Imperfection_Material_VT/M_MS_Imperfection_Material_Var_VT.uasset": {
+      "sha256": "88dabb510cff763f1427088919730fef08cf33df6b84e0f32a3dd42a1aa65a04",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Imperfection_Material_Var/M_MS_Imperfection_Material_Var.uasset": {
+      "sha256": "06159d8967807ba3d3fc703b5ed1fbfa7f944788b9e6e56c131f8292ce41eb4e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Base/MF_BaseLayerAdjustments.uasset": {
+      "sha256": "bbe42376d39e055fdaf65188181a3d4d88c2cb2ffd102863651d0356458a889a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Base/MF_BaseLayerTessellation.uasset": {
+      "sha256": "ddf6956ceb53c8d0291984bb99da7ee22a53059c3d6d0c47d5eea60a428060ca",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Base/MF_BaseLayerTextures.uasset": {
+      "sha256": "70acbcc879c18c8b6b17f2702aa96c82173efa9e4411d7ecd38e12cf10340033",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_BlendScatter.uasset": {
+      "sha256": "1f9b87b272868de3a70f715399bc19e23b64d442b383e2d0f9ae33a2a3a927b8",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_Displacement.uasset": {
+      "sha256": "eda504fa1a2a4960b207e4194e2c711277ddf58a77ea8d98b361d3e42e603bdc",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_DisplacementBlend.uasset": {
+      "sha256": "948efe3c2a495c8cf8f1ecf63c939e6787c1cc5bb9a40773677b53554badc72c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_MaterialBlend.uasset": {
+      "sha256": "3b5339afe98cf327086073b14b53b765654b2caee27f03007ddf220680f8b755",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_NormalCorrection.uasset": {
+      "sha256": "7c18b20eb8ff8ac8fe2607c6bea130cf8f7cf826e5a960123ecbd12097a89bb1",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_ScatterLayer.uasset": {
+      "sha256": "9f3e0f79d3054052dc7ab39cf25bc16b8f7dd03ccb8c1a0d66d5708e3c16fc96",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Middle/MF_MiddleLayerAdjustments.uasset": {
+      "sha256": "970b0694a44f67531fddeebc691b70a2044bbb00d78d53a3b04a40504c374184",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Middle/MF_MiddleLayerTessellation.uasset": {
+      "sha256": "820066ee8678c5817e0ed0c4add6a3105e1ee87ac98ca74c954fc0fad1ea28e9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Middle/MF_MiddleLayerTextures.uasset": {
+      "sha256": "d4cc648b1632ad6f0b681da77a073f86d361b3e30f54709322850a0f0dc4fbcd",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Puddle/MF_PuddleLayer.uasset": {
+      "sha256": "63cb57f58b437fb4d2a8e0ed3267d10f437b10b0010a2195c9a05de65436441c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Top/MF_TopLayerAdjustments.uasset": {
+      "sha256": "cfe2c5d87829d6e4510cdb86f602bcd5f153c1da875c73cb4823613efc496a02",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Top/MF_TopLayerTessellation.uasset": {
+      "sha256": "30179784bd54d4dd2ee46ce797c7f2124a7763c7bc3299125cdbc12faff77e01",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Top/MF_TopLayerTextures.uasset": {
+      "sha256": "380db1949cb1f7d1ab9e9e9a0ab5044afdf3ae4f788dc88c3d99557a647b4020",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_SurfaceBlend_Material/M_MS_SurfaceBlend_Material.uasset": {
+      "sha256": "9e5476c37747e8739be40e4414f5ecc41a06ea3281edde21a077b260ebeb94a9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material/Functions/MF_Displacement.uasset": {
+      "sha256": "6d10e4b67345998e5ba9eefbcb757b12d0baa1e7a0574337fcc7cf79df37ff41",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material/Functions/MF_MapAdjustments.uasset": {
+      "sha256": "f340958483ef9b3195adae536a38e14652a690ea65b1ec13508b12cb41fefab8",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material/Functions/MF_ObjAdjustments.uasset": {
+      "sha256": "e4b3eab74970773e2d1521f48f3e4351a5515035c2ff721b73440db155fc96e9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material/Functions/MF_Tiling.uasset": {
+      "sha256": "7292d68aed3640408113c3d2dd9414457f2185ab195656c1f0e3c5d855b898a8",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material/Functions/MF_Transmission.uasset": {
+      "sha256": "328d2825e64ad3bf1417a31230fc82b3edf280624bdf9c05bc0a8523369e6e56",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material/M_MS_Surface_Material.uasset": {
+      "sha256": "433d163788c2a1a69104eaa6b5296aec3e356161ab221353cb34cb2f23b81ec6",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_Displacement.uasset": {
+      "sha256": "892c8382cfb4c50ed8c90a6b5be3f0923eed0e6a8eb4dbb76d1baa83a6116c3d",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_MapAdjustments.uasset": {
+      "sha256": "a714703e8d52d363349d6ebc05e1e3e33b4a96aa633e44b92b0483db6386c3c9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_ObjAdjustments.uasset": {
+      "sha256": "4982906851efd468e3f9bf2021313ba007c711fb683a40d28a7681806c4566e7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_Tiling.uasset": {
+      "sha256": "dd608246cc837b0f2b83cbcc63eb4b741929502c3a844d37bd5f64652b177afb",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_Transmission.uasset": {
+      "sha256": "a589437d09316b20ba687e30fe6f64afd6d656f3b815478e1a81302ff6c944e0",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MSPresets/M_MS_Surface_Material_VT/M_MS_Surface_Material_VT.uasset": {
+      "sha256": "f93c40cca6274ae25a023027de45ce155501c8fb8c70b4ca89af4126185586dd",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/M_Landscape_Blend_Inst.uasset": {
+      "sha256": "bcef454611c19f85261573ff17799e3cb613e99b62c2cfa91813e0b8639409c0",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_CountdownWidgetBP.uasset": {
+      "sha256": "a1b0f933e3f18c945a50f93206bff45376f31a179b401d23de7ec72fd519410d",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_DroidshooterGameModeBP.uasset": {
+      "sha256": "3c235ebae879e6ea5613330ef29d4e780822efd8895eaddcf317778ff9e2457a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_EndGameScoreWidget_BP.uasset": {
+      "sha256": "26375743fff5ba93f391607dc8d6a010859efde4fcc04178d63f291c3ac91870",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_GameModeBP.uasset": {
+      "sha256": "a63457ae590a26bd26a3f2d8435a3eba95a535089a0b4bef2929fd557fc3df16",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_GameState_BP.uasset": {
+      "sha256": "00644d38063175fce8040359a5739d75892f14f8f2d96451d03defe76a8fe0fb",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_MainMapLevel.umap": {
+      "sha256": "6fa228c91663f583019f6705ffdacecd349720e4ab06c8f49292b8c0b0d8fa74",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_MainMapLevel_BuiltData.uasset": {
+      "sha256": "f1bbd593d6c52ca304d2e9cc2b0e76bd5c63b32edee35d77a91097eadd977cba",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_TimerWidgetBP.uasset": {
+      "sha256": "1eaa92ffa7e85c227d442218a3bed02d4db60aaed82f1148007298fb6ae43545",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DS_WaitingForPlayersWidget_BP.uasset": {
+      "sha256": "717c4b3cfdb77dc90bff6190e3ae568b3578b31146849e298e8309c8dad3f771",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/DroidshooterGameModeBlueprint.uasset": {
+      "sha256": "1889b571598292c1ba3159feba2dfb8c7394e9b93152ec44ffd60c7f83b4712b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainGame/MainMap.umap": {
+      "sha256": "9ecf35f8d58d57ef67535e5a71096d1ea670a06f531ef91561fa57a85e4be418",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMap.umap": {
+      "sha256": "3e30dfa07b9d1ba44d6077afdb577933f0f2dd2fb2e0ce1bf568f3e60dd859fa",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/DS_ConnectingWidget_BP.uasset": {
+      "sha256": "426050b68436589c8b8a355a1f7129716b5f09eb17770e8474c29ec34d0be7c9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/DS_MainMenuGameModeBP.uasset": {
+      "sha256": "932ee644eee7d2c9a7489b0f9aedf7a7ed35f20b1aa3c02aadc97638e4553c01",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/DS_MainMenuLevel.umap": {
+      "sha256": "2649f309d64c43fd53fa0b7a9284627af9c8a4bbf8b9c7c610e53ea95ddba7b4",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/DS_PauseScreenWidgetBP.uasset": {
+      "sha256": "31cbdb95911d078339b55e6c0b5f293c9c993ccc001e765dd9dd1497e2ad4f7f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/DS_WelcomeScreenWidgetBP.uasset": {
+      "sha256": "41262f794d65c8843fec120c1723d925c4312ed0fea8ba949f9b8c3a7047726e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/MainMenu.umap": {
+      "sha256": "058ad1cee9f944ee2f21ec248af27eeeeb2b697f5c59aacd5c71dffbfa946eb5",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/MainMenuGameModeBP.uasset": {
+      "sha256": "51dfe8b426be7cdfc6176931ca9bf113950c8925bdd0618fadc4bf6e7187466e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/WelcomeScreenBP.uasset": {
+      "sha256": "21d214d1419d8f4d01daafba82c447281c89a890e9bfe777049c1f506f366334",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/WelcomeScreenBackground.uasset": {
+      "sha256": "a01337935a352e1aac6498daef5e9a0620d9a3347f8e5e61ce2fa7bb4a7aed29",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/agones.uasset": {
+      "sha256": "a1a9dafb2093d6db876035cac6d5eb10078b3301c7bb2cb65827371edb190743",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/gfg.uasset": {
+      "sha256": "67db095f8f026ce44ff4b48e8d91ad6b3729a9fb564d7bf7b150af25997daad9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu/om.uasset": {
+      "sha256": "81009c8e5b60981f0ee0eb0c787cbabdfd5af00b54e4504e9bca98ff7e0d6d66",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/MainMenu.umap": {
+      "sha256": "fcd6868fc22176d2daf36ff489890f3228814e14de4d1e8868735e015adc0537",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/BlueEmitter.uasset": {
+      "sha256": "becef3cfbc4fe6e1baf4b7b0bc904af972ddc0fddb4c7a50fae84f25be0f7ca3",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/BluePBR.uasset": {
+      "sha256": "cb2ac723556c4e188b4ace55f089bfb5d68997f29813e88601240ee70abe798b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/CyanEmitter.uasset": {
+      "sha256": "d7c806380603e7b756b6503bd4abb7583ed06fafc6cae95eefacd04a36a4393b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/CyanPBR.uasset": {
+      "sha256": "07b942da7b5e733f60155d66bbc9a4ba2e4fed06990085470a838eff26b4c0e0",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Emitter.uasset": {
+      "sha256": "a9cb51f8f38808125b721e2c9cc9c22f966e11b3a8c52e509a998bb1759f8a28",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/GreenEmitter.uasset": {
+      "sha256": "d06e09c731b4aca7b95969433af65d6321e7308c615c92ae389ecae48895d5cd",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/GreenPBR.uasset": {
+      "sha256": "91b53a3a7b7b4b5b5d1f9f9b9b1a2e328e74d80fe477e8bf8fe814db67a9bf88",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/MagentaEmitter.uasset": {
+      "sha256": "428358d4a5f13909919f842c7b1dad5f493d2211df58712be24f6d2e1f957520",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/MagentaPBR.uasset": {
+      "sha256": "2c879ab9c8cfeca82f1cb092b6bcab36ab9af7b34583ad02d0f3cdca142157f7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Metal.uasset": {
+      "sha256": "bf83f963759efa2370e2db7a9bd40b102af977cc0f364fbb13856b0528ab8cd3",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/PBR.uasset": {
+      "sha256": "214e3c0918dbfe8f1e5d03e4d0dc48a28809dafce2d852448797f3065ea3d4fb",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/RainbowEmitter.uasset": {
+      "sha256": "189f2855ed4e9e983a1c9a27568f90a77c53aef0922e65ef01d2efdbd517bd7d",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/RainbowFunction.uasset": {
+      "sha256": "d63d711a5697735a2215257fb95abce799b55c9fc1c9212f0ac47f896330e92f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/RainbowPBR.uasset": {
+      "sha256": "ea27c61df9fe683ef09488332d4e97e31fa4943665667ca2206912fc17e21d68",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/RedEmitter.uasset": {
+      "sha256": "6d300d662a03df21edc516869184cf6f0bbde0aeb886bdf77e583ed602b2d916",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/RedPBR.uasset": {
+      "sha256": "a2e36f8eac05462bfd4d9413fdf413f007363feb93e9c9330d2f8abbe36ba96b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Terrain/MF_Layer1.uasset": {
+      "sha256": "20c200ce3dd03868a2005bbdbc1b476b6319eeae4a9cda54d5f964ff25a7eabe",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Terrain/MF_Layer2.uasset": {
+      "sha256": "150cbfe061c260527e7ed167c265f14c7ef237060fea31a56984b5459b3098b5",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Terrain/MF_Layer3.uasset": {
+      "sha256": "0cbf3467766d4e4ae11455a524f7e99bd422a05f499564c956c515dfe5661a40",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Terrain/MF_Layer4.uasset": {
+      "sha256": "e3e5b00bb66920c14f66b2b20d4e83acd74425657e10b77d9c1ae19816af1874",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Terrain/M_Landscape_Blend.uasset": {
+      "sha256": "fd6d86fae5df623deaa1905e24e26a291afd3c3dfc7c8f0f6b236ffaee49530f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/Terrain/M_Landscape_Blend_Inst.uasset": {
+      "sha256": "3b3867d3d005754cff7cfd7e79599af6b55843313bab2335b4d03458b85df0ef",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/WhiteUI.uasset": {
+      "sha256": "8c83b1ab1bf36162cbf059e968f965080f55a02e12d7b294a3b6b24989fd6c87",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/YellowEmitter.uasset": {
+      "sha256": "9ab31e4b2f98f99849e9b7a03ac71dcbb22a789aadba5c6338dd263e07df00ac",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Materials/YellowPBR.uasset": {
+      "sha256": "dfe1de0cee769b3947ae58ce32be1f12cb3745590e582e3773645338ea610739",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/LICENSE": {
+      "sha256": "f358993e68c570a2378a335cd93007bdbd8b9d135d565640e9d4117add708bce",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Fresh_Snow_vl3jcihfw/MI_Fresh_Snow_vl3jcihfw_2K.uasset": {
+      "sha256": "6bfbfb56242d72766969a54138ce7698235275fa4a21fef005656f5847fece46",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Fresh_Snow_vl3jcihfw/T_FreshSnow_vl3jcihfw_2K_ORDp.uasset": {
+      "sha256": "9d67e27e63479d96ef1cf88bf365cbecebe3ef3df8e33a9066fe748d7a3d05a0",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Fresh_Snow_vl3jcihfw/T_Fresh_Snow_vl3jcihfw_2K_D.uasset": {
+      "sha256": "3f2a96316ac0ae65555f620879196af07c00434b65f2eacde05e17f739a3c97a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Fresh_Snow_vl3jcihfw/T_Fresh_Snow_vl3jcihfw_2K_N.uasset": {
+      "sha256": "ee5f98796433ae7dc5fd0ae5d962278cc533df1cfdac4955c4e591fc884196d4",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Mossy_Grass_vcpoajjs/MI_Mossy_Grass_vcpoajjs_2K.uasset": {
+      "sha256": "e055676ce262063f43c780fb69404e6feafe98234c9c8b17c248eb7b0f8fea7f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Mossy_Grass_vcpoajjs/T_MossyGrass_vcpoajjs_2K_ORDp.uasset": {
+      "sha256": "9a9322133ff5115b42c20a15f20f948541dde38334ca0d3361a8a1a731f77c78",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Mossy_Grass_vcpoajjs/T_Mossy_Grass_vcpoajjs_2K_D.uasset": {
+      "sha256": "af60774d617e333a9c9e7911288c2f59938870873faced66bcd98fcc1fa98390",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Mossy_Grass_vcpoajjs/T_Mossy_Grass_vcpoajjs_2K_N.uasset": {
+      "sha256": "c142cc78fa4f014ff36ef543bab60de6c8cfe26c67117a5b08f185304034f2a0",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_uknicjmmw/MI_Rocky_Steppe_uknicjmmw_2K.uasset": {
+      "sha256": "266984ffe25a00856c22dfb21ba82f4dbc81234d40e9e543ddf0a479eb1b6afe",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_uknicjmmw/T_RockySteppe_uknicjmmw_2K_ORDp.uasset": {
+      "sha256": "50c1ec759dc21133e4258b5722533ffd899be8d431c746e0300285b1d9c9cb73",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_uknicjmmw/T_Rocky_Steppe_uknicjmmw_2K_D.uasset": {
+      "sha256": "2439409126c23e42abd64d88b948116b07ca519420ff62a510376016377f1786",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_uknicjmmw/T_Rocky_Steppe_uknicjmmw_2K_N.uasset": {
+      "sha256": "7f5b736f3a89014b2d41765c26fc2d66c70771228654d5d89009a50d647685ec",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_ulgmbhwn/MI_Rocky_Steppe_ulgmbhwn_2K.uasset": {
+      "sha256": "73857600fc0cc993393d8f21fbbdf0a2bae26f02db210701f9f878154c927b73",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_ulgmbhwn/T_RockySteppe_ulgmbhwn_2K_ORDp.uasset": {
+      "sha256": "b1d75bf6fcb1e65d6ad35407637ef3523f6ba0351649de78a927b1a0b49fe52c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_ulgmbhwn/T_Rocky_Steppe_ulgmbhwn_2K_D.uasset": {
+      "sha256": "f3327fda8b499bd693b288260218380f5ad3b46bea1cd9c474eed5b1a98877fd",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Megascans/Surfaces/Rocky_Steppe_ulgmbhwn/T_Rocky_Steppe_ulgmbhwn_2K_N.uasset": {
+      "sha256": "18ae7eb0fc19ac72ed10d4cc05eb7399c6119df30fcae4c90451e63d7693665b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/DS_PlayerControllerBP.uasset": {
+      "sha256": "2f0cf893275d3df7234741522e4aac715fdebbb01952b48dd0288c455e8258e7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/DS_PlayerHUDBP.uasset": {
+      "sha256": "75bcf78ffc347cbb0b3d977d0a5cbba46709839490c5c44f8daf9113cf10a47e",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/DS_PlayerHUDWidgetBP.uasset": {
+      "sha256": "f02b6dd74d1b9c9b70f2aaa1c43c9454b76e953565da54a11a27f142bc03186a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/DS_PlayerPawnBP.uasset": {
+      "sha256": "cbf3dea8db223116bf178760daa306445b6beabd70f91ede852bc11e70f781f1",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/DS_PlayerStateBP.uasset": {
+      "sha256": "46bfaccfd71f557b37705afa7bd3860075e2ce65b1edb5bf225957b0d7ad1b21",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/Player-HUD-Charge.uasset": {
+      "sha256": "861fc368801af499ceba137967469bbfccda7c3ceaa6c1ef8fa90fc0d369fac2",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/Player-HUD-Life.uasset": {
+      "sha256": "5c4d972b01517f2bc3e1493eb4e69e0ca43444457afe0edb733c6a6642d71ec3",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/Player_Spaship_v4_Body.uasset": {
+      "sha256": "2a1e6fb22b64146d4166c8a3ec877b5e316df11152b1e9aa4bdee5e76aa64009",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/Player_Spaship_v4_SidePanels.uasset": {
+      "sha256": "ab12f03ac49da9ef301ce5b08895f83cf05810e7d386f9fead1c7c076192c976",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Content/Player/Player_Spaship_v4_Thrusters.uasset": {
+      "sha256": "d1c28ebeb719af36b91d408f47828249c02c60ae051ac611c471a27ab86146aa",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Droidshooter.uproject": {
+      "sha256": "b2b15e7dd0a18083795d43647492fe01f85102f913f6fdba5afd25b7000f2234",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/GameLauncher/README.md": {
+      "sha256": "211f9217a63db6e303d9aeb8f899e6ef5b16f7aa2fc605b4eae9373a1685ea66",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/GameLauncher/app.ini.sample": {
+      "sha256": "9b63df5825b3e012136ca70916557f92929b76e938460d4d86523968f6f61fa7",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/GameLauncher/assets/header.png": {
+      "sha256": "922a370f4f3115c6862c8d5afb390c66c388cef91ce607607848d40e295cbe32",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/GameLauncher/assets/icon.ico": {
+      "sha256": "99cef29b6b48c85acb62bf91e37293bbe973b10c72a412274939533f5cd7ef89",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/GameLauncher/go.mod": {
+      "sha256": "591396aad8a301939e10d2fc39027f45f84eed8635cbef320a2c733d8af1d6c8",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/GameLauncher/go.sum": {
+      "sha256": "4a9c67ec2ea0cf3e161a104d2832a4de965f8e4937771a49f0c85dca0c9fd2ad",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/GameLauncher/main.go": {
+      "sha256": "f75e0184e26768688ce850f46ace33e19ba395d8d1aa2315bbc951227c87b183",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Platforms/HoloLens/Config/HoloLensEngine.ini": {
+      "sha256": "57237d0aa12c47684b088faee47a59c356de882c27e4690d4c41fc438a90f784",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/.gitignore": {
+      "sha256": "779dbd0e67e90e59706b3c6844eaa68538b67929f9f875298055f4b4c00aa2b6",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Agones.uplugin": {
+      "sha256": "7d35fa01cbedff9fb7d280f5e668e39d17441cc1fe49875952250ce237bef147",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Resources/Icon128.png": {
+      "sha256": "efda7bc790e26ebf7d60d471178485dd26b5df7b9cf83962e3b65b50ae34d252",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Source/Agones/Agones.Build.cs": {
+      "sha256": "67c77fe187202be760e2e5d5cdee22c87ba5948c483c1da6bcdb9b9123aa845a",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Source/Agones/Classes/Classes.h": {
+      "sha256": "ff3a795e4ef17f57562086914e21d10e1035464754b61d73c961cee765c5be5c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Source/Agones/Private/Agones.cpp": {
+      "sha256": "4c010862caba9f6654029bb181b3c071451069e7872c6f5637c818450871e04f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Source/Agones/Private/AgonesComponent.cpp": {
+      "sha256": "c0425b559b2e8ab93b42a5a69d0b0e6b7fe692811876b8bd1d0e9df42a860145",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Source/Agones/Public/Agones.h": {
+      "sha256": "3614efa36b9a5fef8b11b2425d44b1749a611476af0a767607019cb4dcc80a92",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Plugins/Agones/Source/Agones/Public/AgonesComponent.h": {
+      "sha256": "f644773638e36754fbe002f36a666480750bbec93d7adda67a79a417946b538b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/README.md": {
+      "sha256": "81ba9d0bccf9e5e04fafd8740e4ab467b736af0e15d36610df1376135d46310c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/Droidshooter.Build.cs": {
+      "sha256": "b9ccd2a815d4ce3ffeafb453ff69a682f4e791c5205ad0fe7207a99decca5726",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/Droidshooter.cpp": {
+      "sha256": "9a9122cd61354bc572f93827c581de9ee3a869e9a23048813fb1203d0a68c4ff",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/Droidshooter.h": {
+      "sha256": "774703f2fe41760277f4600eea25026130ba62aab0141c4f15f382c3eb749a0f",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterGameMode.cpp": {
+      "sha256": "03756313fb8040c920e75c1a57f1a4fcdf257d7123304f4648336564226d6680",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterGameMode.h": {
+      "sha256": "ac10b31094ca22171d9049dde4611e2bc984fd05cb40decde3b1d348ec1158b4",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterGameStateBase.cpp": {
+      "sha256": "d00194ad9e025e0ccd299fc10d3a8b8505dfa7382dc68cb50eda3f8eb327c192",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterGameStateBase.h": {
+      "sha256": "4e69ef022d9cdf946ad12859697de75aaa8827a71af0f3cc4080e04833c02936",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp": {
+      "sha256": "6d5ecd20b13224856f4d4777c1c2890725f0858775cd6b1349c9266ce44dca77",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h": {
+      "sha256": "25e7412d1b8a9b6466eb0203292f07dc0f719012213e9bfbed70ff6d6334f527",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterMainHUD.cpp": {
+      "sha256": "e98b3dd1a9727921f09c08e73a8ead40bcdec20f6f8131b7b1b69db54bdda901",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterMainHUD.h": {
+      "sha256": "515c57b66ee7873691f7fdf65a733fba6b5f4023e39a79f0e3eb6aa5b788a3b0",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterMapRoom.cpp": {
+      "sha256": "665e0cd0466f869574cafc25c84486ca0d05641f4c620369b1cdb6efb1563e26",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterMapRoom.h": {
+      "sha256": "3dd4e93178bc5407f18a3cb9d57ac0e658d62ae2d703900ac17a8d812f0a61ed",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerController.cpp": {
+      "sha256": "32f67031e90bf6a3fc6fe71238214624e795915cd495a15abde1fa5d8b571c50",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerController.h": {
+      "sha256": "aafc9aa6d0d3f7d7cfa37e7614543c17a83c06793bb814ced9f608b9c1a3f07b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerHUD.cpp": {
+      "sha256": "521cbee5d38c4a7416ade7805bb64cbdf3f2ed456eb5d41d2af09ddd4631bb28",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerHUD.h": {
+      "sha256": "a29f5c42e120df30d2dc29a84142991097f730c0f78fab4c3e4e147ba098f2ff",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerPawn.cpp": {
+      "sha256": "c5ea81d6bd008731bacb74bef50926b0e5e7fa217c92fc2e529dd55a141bc233",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerPawn.h": {
+      "sha256": "df5bd2df6904c44941452677fa053a82af3e96605f97e9244e99f689fe557a1c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerState.cpp": {
+      "sha256": "8b5e94227e83d3e28f020ad7bccb44322318a9ec8b03480f10f1dbe9d2e7aac2",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterPlayerState.h": {
+      "sha256": "f1f3c2658bb1e56d986e92fe31431e08c1aa0c5261573c6d3292d6fb5d171efc",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterServerPing.cpp": {
+      "sha256": "a962762d98f6df7c04937510adafc98ede6e7b0a41ca5a9fa411f1ba267cc3bc",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterServerPing.h": {
+      "sha256": "4ac8f600b97a22b36b3c8113dc6b46fb71cb0ea576a60d6e15741d5b3bfff78b",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterShot.cpp": {
+      "sha256": "2527be52578aeca51a498c2b808e85e490dde93685420e80ccef8e2088926466",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter/DroidshooterShot.h": {
+      "sha256": "3e1a070e8c055704cbd15c77ff0a84bfa908f752c66398805dae7f84fdc9b3b9",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/Droidshooter.Target.cs": {
+      "sha256": "cca6332018f6c9d887a9627fd57017df51d65b9b25d741ab98f3da5b4df0326c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/DroidshooterClient.Target.cs": {
+      "sha256": "c92a6aff017089c941c67ac0ba0246bc75945dd10279c0ffab4e6141ba402d0c",
+      "executable": false
+    },
+    "global-multiplayer-demo/game/Source/DroidshooterEditor.Target.cs": {
+      "sha256": "e9c3ccd58862846a4c4e0b63454afd6499471be1647263439b6391bb6a372f06",
+      "executable": false
+    }
+  },
+  "client_config": {
+    "file": "global-multiplayer-demo/game/GameLauncher/app.ini.sample",
+    "format": "ini"
+  }
+}

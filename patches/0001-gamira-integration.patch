@@ -1,0 +1,1201 @@
+diff --git a/global-multiplayer-demo/game/GameLauncher/README.md b/global-multiplayer-demo/game/GameLauncher/README.md
+index 59a760292d3664d2d9b6726f78f4dbba3efba050..840d24440c00bbdeb9414e39e5a0174f5ccefd07 100644
+--- a/global-multiplayer-demo/game/GameLauncher/README.md
++++ b/global-multiplayer-demo/game/GameLauncher/README.md
+@@ -1,25 +1,6 @@
+-## Generic game launcher with "Sign-in with google" authentication.
++# Droidshooter client launcher
+ 
+-To run the launcher locally:
+-
+-```shell
+-go run main.go
+-```
+-
+-To build locally after installing necessary dependencies just run:
+-
+-```shell
+-go build .
+-```
+-
+-Move the built binary together with `app.ini` and `assets/` to the game client folder. Launch there.
+-
+-`app.ini` contains the configuration endpoint for the Frontend API as well as executable names for the game client.
+-
+-If you want to fully package the launcher:
+-
+-For prerequisites check here:
+-https://developer.fyne.io/started/
+-
+-For packaging check here:
+-https://developer.fyne.io/started/packaging
++Copy `app.ini.sample` to `app.ini`. Set `gamira_url` and `platform_url` to the
++Gamira API and authentication platform base URLs, and set your game executable.
++Run `go build -o launcher .` and launch from this directory.
++No administrator keys or backend services are included in this client package.
+diff --git a/global-multiplayer-demo/game/GameLauncher/app.ini.sample b/global-multiplayer-demo/game/GameLauncher/app.ini.sample
+index 87aea5ef2b4c7c037dd0a5c4a59a0625aa767e83..edc29e95dc1c9fedb12b7d28a440242b02585fa3 100644
+--- a/global-multiplayer-demo/game/GameLauncher/app.ini.sample
++++ b/global-multiplayer-demo/game/GameLauncher/app.ini.sample
+@@ -1,19 +1,6 @@
+-# Copyright 2023 Google Inc. All Rights Reserved.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-
+-frontend_api = http://${IP_ADDRESS}.sslip.io
+-callback_listen_port = 8082
++platform_url = http://localhost:30090
++gamira_url = http://localhost:30080
++callback_listen_port = 8083
+ 
+ [windows]
+ binary = .\DroidshooterClient.exe
+diff --git a/global-multiplayer-demo/game/GameLauncher/main.go b/global-multiplayer-demo/game/GameLauncher/main.go
+index 4ce9cabf50dfe60dc582c30b84b6a682d9455d78..1a0cd0146f63640a1b17e5b52ba0b109f2527cce 100644
+--- a/global-multiplayer-demo/game/GameLauncher/main.go
++++ b/global-multiplayer-demo/game/GameLauncher/main.go
+@@ -1,4 +1,4 @@
+-// Copyright 2023 Google Inc. All Rights Reserved.
++// Copyright 2023 Google LLC All Rights Reserved.
+ //
+ // Licensed under the Apache License, Version 2.0 (the "License");
+ // you may not use this file except in compliance with the License.
+@@ -15,14 +15,24 @@
+ package main
+ 
+ import (
++	"bytes"
++	"crypto/rand"
++	"crypto/rsa"
++	"crypto/sha256"
++	"crypto/x509"
++	"encoding/base64"
+ 	"encoding/json"
++	"encoding/pem"
+ 	"fmt"
+ 	"io"
+ 	"log"
+ 	"net/http"
++	"net/url"
+ 	"os"
+ 	"os/exec"
++	"path/filepath"
+ 	"runtime"
++	"sort"
+ 	"strings"
+ 	"time"
+ 
+@@ -37,206 +47,379 @@ import (
+ )
+ 
+ var (
+-	myToken  string
+-	myApp    fyne.App
+-	myWindow fyne.Window
+-	iniCfg   *ini.File
++	myToken       string
++	myApp         fyne.App
++	myWindow      fyne.Window
++	iniCfg        *ini.File
++	rsaPrivateKey *rsa.PrivateKey
++	httpClient    = &http.Client{Timeout: 10 * time.Second}
+ )
+ 
+ func main() {
+-	// Load configs
+ 	var err error
+ 	iniCfg, err = ini.Load("app.ini")
+ 	if err != nil {
+ 		log.Fatalf("Fail to read file: %v", err)
+-		os.Exit(1)
++	}
++
++	for _, key := range []string{"gamira_url", "platform_url"} {
++		value := strings.TrimRight(iniCfg.Section("").Key(key).String(), "/")
++		parsed, parseErr := url.Parse(value)
++		if parseErr != nil || parsed.Host == "" || (parsed.Scheme != "http" && parsed.Scheme != "https") || parsed.User != nil || parsed.RawQuery != "" || parsed.Fragment != "" {
++			log.Fatalf("Set %s in app.ini to an HTTP(S) service URL without credentials, query or fragment", key)
++		}
++		iniCfg.Section("").Key(key).SetValue(value)
++	}
++
++	rsaPrivateKey, err = rsa.GenerateKey(rand.Reader, 2048)
++	if err != nil {
++		log.Fatalf("Failed to generate RSA key: %v", err)
+ 	}
+ 
+ 	myToken = ""
+ 
+-	// Callback handling from the frontend api
+-	http.HandleFunc("/callback", handleGoogleCallback)
++	http.HandleFunc("/", handleAuthCallback)
+ 	go func() {
+-		log.Printf("Google for Games Launcher is listening for callbacks on :%s", iniCfg.Section("").Key("callback_listen_port").String())
++		log.Printf("Launcher listening for OAuth callbacks on :%s", iniCfg.Section("").Key("callback_listen_port").String())
+ 		log.Println(http.ListenAndServe(":"+iniCfg.Section("").Key("callback_listen_port").String(), nil))
+ 	}()
+ 
+-	// UI
+ 	myApp = app.New()
+-	myWindow = myApp.NewWindow("Google for Games Launcher")
++	myWindow = myApp.NewWindow("Game Launcher")
+ 	myWindow.SetFixedSize(true)
+ 	myWindow.Resize(fyne.NewSize(320, 480))
+ 	myWindow.CenterOnScreen()
+ 
+-	buttonSignIn := widget.NewButtonWithIcon("Sign-in with Google", theme.HomeIcon(), func() {
+-		openBrowser(iniCfg.Section("").Key("frontend_api").String() + "/login")
+-	})
++	showSignInUI()
++
++	if loadToken() {
++		playerName, err := getPlayerName()
++		if err != nil {
++			log.Printf("Saved token invalid: %v", err)
++		} else {
++			updateUI(playerName)
++		}
++	}
++
++	myWindow.ShowAndRun()
++}
+ 
++func showSignInUI() {
++	buttonSignIn := widget.NewButtonWithIcon("Sign in with GitHub", theme.HomeIcon(), func() {
++		signIn()
++	})
+ 	buttonExit := widget.NewButtonWithIcon("Exit", theme.CancelIcon(), func() {
+-		log.Println("Tapped exit")
+ 		myApp.Quit()
+ 	})
+ 
+ 	subGrid := container.New(layout.NewGridLayout(1), layout.NewSpacer(), buttonSignIn, buttonExit)
+ 	grid := container.New(layout.NewVBoxLayout(), headerImage(), subGrid)
+-
+ 	myWindow.SetContent(grid)
++}
+ 
+-	// If we have a valid token, let's use it and update the UI right away
+-	if loadToken() {
+-		playerName := getPlayerName()
+-		updateUI(playerName)
++func logout() {
++	myToken = ""
++	dirname, err := os.UserHomeDir()
++	if err == nil {
++		os.Remove(dirname + "/droidshooter.jwt")
++	}
++	showSignInUI()
++}
++
++// signIn generates a nonce, registers the RSA public key with auth-demo, then
++// opens the browser to begin GitHub OAuth.
++func signIn() {
++	authAPI := iniCfg.Section("").Key("platform_url").String()
++
++	publicKeyDER, err := x509.MarshalPKIXPublicKey(&rsaPrivateKey.PublicKey)
++	if err != nil {
++		log.Printf("Failed to marshal public key: %v", err)
++		return
+ 	}
++	publicKeyPEM := string(pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: publicKeyDER}))
++	publicKeyB64 := base64.StdEncoding.EncodeToString([]byte(publicKeyPEM))
+ 
+-	myWindow.ShowAndRun()
++	nonceUUID, err := registerNonce(authAPI, publicKeyB64)
++	if err != nil {
++		log.Printf("Failed to register nonce: %v", err)
++		return
++	}
++
++	stateB64 := buildState(nonceUUID)
++	openBrowser(authAPI + "/api/v1/auth/github?state=" + stateB64)
+ }
+ 
+-func handleGoogleCallback(rw http.ResponseWriter, req *http.Request) {
+-	// Save my token
+-	myToken = req.FormValue("token")
+-	if len(myToken) == 0 {
+-		log.Fatal("No token received!")
++// registerNonce stores the RSA public key in auth-demo and returns a nonce UUID
++// used as state.UUIDv4 in the OAuth flow.
++func registerNonce(authAPI, publicKeyB64 string) (string, error) {
++	body, _ := json.Marshal(map[string]string{"publicKey": publicKeyB64})
++	resp, err := httpClient.Post(authAPI+"/api/v1/nonce", "application/json", bytes.NewReader(body))
++	if err != nil {
++		return "", fmt.Errorf("nonce request: %w", err)
++	}
++	defer resp.Body.Close()
++
++	data, err := io.ReadAll(resp.Body)
++	if err != nil {
++		return "", err
++	}
++	if resp.StatusCode != http.StatusOK {
++		return "", fmt.Errorf("nonce request failed (status %d): %s", resp.StatusCode, data)
+ 	}
+ 
+-	saveToken(myToken)
++	var nonce string
++	if err := json.Unmarshal(data, &nonce); err != nil {
++		return "", fmt.Errorf("parse nonce: %v, body: %s", err, data)
++	}
++	return nonce, nil
++}
+ 
+-	// Update UI with profile info and launch game button
+-	playerName := getPlayerName()
++// buildState encodes the OAuth state parameter that auth-demo expects.
++// The nonce field must be the UUID returned by POST /api/v1/nonce.
++func buildState(nonceUUID string) string {
++	state := map[string]string{
++		"authenticationType": "web",
++		"nonce":              nonceUUID,
++	}
++	b, _ := json.Marshal(state)
++	return base64.StdEncoding.EncodeToString(b)
++}
++
++// handleAuthCallback is called when auth-demo redirects the browser to the
++// launcher's callback port after a successful GitHub OAuth.
++// The URL contains ?nonce=<RSA-encrypted-token-UUID>.
++func handleAuthCallback(rw http.ResponseWriter, req *http.Request) {
++	encryptedNonce := req.URL.Query().Get("nonce")
++	if encryptedNonce == "" {
++		http.NotFound(rw, req)
++		return
++	}
++
++	tokenUUID, err := decryptNonce(encryptedNonce, rsaPrivateKey)
++	if err != nil {
++		log.Printf("Failed to decrypt nonce: %v", err)
++		fmt.Fprintf(rw, "<p>Authentication failed: could not decrypt nonce</p>")
++		return
++	}
++
++	authAPI := iniCfg.Section("").Key("platform_url").String()
++	token, err := exchangeToken(authAPI, tokenUUID)
++	if err != nil {
++		log.Printf("Failed to exchange token: %v", err)
++		fmt.Fprintf(rw, "<p>Authentication failed: could not retrieve token</p>")
++		return
++	}
++
++	myToken = token
++	saveToken(token)
++
++	playerName, err := getPlayerName()
++	if err != nil {
++		log.Printf("Failed to get player name: %v", err)
++		playerName = "Player"
++	}
+ 	updateUI(playerName)
+ 
+-	// Close the browser window
+-	closeScript := `<script> 
+-		setTimeout("window.close()",3000) 
+-	</script>
+-	<p>
+-		<h2>Authenticated successfully. Please return to your application. This tab will close in 3 seconds.</h2>
+-	</p>`
+-	fmt.Fprintf(rw, closeScript)
++	fmt.Fprintf(rw, `<body style="background:#1a1a2e;color:#eee;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><div style="text-align:center"><h2>Authenticated successfully!</h2><p>This tab will close in 3 seconds.</p></div><script>setTimeout(function(){window.close()},3000)</script></body>`)
++}
++
++// decryptNonce reverses auth-demo's EncryptData + extra base64 wrapper.
++// nonce = base64( EncryptData(UUID) ) = base64( base64( RSA-OAEP-SHA256(UUID) ) )
++func decryptNonce(nonce string, privateKey *rsa.PrivateKey) (string, error) {
++	outer, err := base64.StdEncoding.DecodeString(nonce)
++	if err != nil {
++		return "", fmt.Errorf("outer base64 decode: %w", err)
++	}
++	cipherText, err := base64.StdEncoding.DecodeString(string(outer))
++	if err != nil {
++		return "", fmt.Errorf("inner base64 decode: %w", err)
++	}
++	decrypted, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, privateKey, cipherText, nil)
++	if err != nil {
++		return "", fmt.Errorf("RSA decrypt: %w", err)
++	}
++	return string(decrypted), nil
++}
++
++// exchangeToken calls auth-demo's token/issue endpoint using the decrypted UUID
++// as the nonce. Returns the JWT string.
++func exchangeToken(authAPI, tokenUUID string) (string, error) {
++	req, err := http.NewRequest(http.MethodGet, authAPI+"/api/v1/token/issue", nil)
++	if err != nil {
++		return "", err
++	}
++	req.Header.Set("x-nonce", tokenUUID)
++
++	resp, err := httpClient.Do(req)
++	if err != nil {
++		return "", err
++	}
++	defer resp.Body.Close()
++
++	data, err := io.ReadAll(resp.Body)
++	if err != nil {
++		return "", err
++	}
++	if resp.StatusCode != http.StatusOK {
++		return "", fmt.Errorf("token exchange failed (status %d): %s", resp.StatusCode, data)
++	}
++
++	var token string
++	if err := json.Unmarshal(data, &token); err != nil {
++		return "", fmt.Errorf("parse token: %v, body: %s", err, data)
++	}
++	return token, nil
+ }
+ 
+ func updateUI(playerName string) {
+-	// Update UI with profile info and launch game button
+ 	label1 := widget.NewLabel(fmt.Sprintf("Welcome %s!", playerName))
+ 	label1.Alignment = fyne.TextAlignCenter
+-	label2 := widget.NewLabel("Are you ready to play again?!")
+-	label2.Alignment = fyne.TextAlignCenter
+-
+-	resolutions := widget.NewSelect([]string{
+-		"320x240", "512x384", "640x480",
+-		"720x480", "800x600", "1024x768",
+-		"1280x1024", "1600x1200", "1920x1080"},
+-		func(s string) {
+-			log.Println("Instances set to", s)
+-		})
+-	resolutions.SetSelected("1280x1024")
+-	windowed := widget.NewCheck("Windowed?", func(value bool) {
+-		log.Println("Windowed set to", value)
+-		if value {
+-			resolutions.Enable()
+-		} else {
+-			resolutions.Disable()
+-		}
+-	})
+-	windowed.Checked = true
+-	instances := widget.NewSelect([]string{"1", "2", "3", "4"}, func(s string) {
+-		log.Println("Instances set to", s)
+-	})
+-	instances.SetSelectedIndex(0)
+-	label3 := widget.NewLabel("Instances:")
+-	clientLayout := container.New(layout.NewVBoxLayout(),
+-		container.New(layout.NewHBoxLayout(), windowed, label3, instances),
+-		resolutions)
+ 
+ 	buttonPlay := widget.NewButtonWithIcon("Open Droidshooter", theme.MediaPlayIcon(), func() {
+-		log.Println("Tapped Play!")
+-		handlePlay(windowed.Checked, instances.SelectedIndex()+1, resolutions.Selected)
++		handlePlay()
++	})
++	buttonLogout := widget.NewButtonWithIcon("Logout", theme.LogoutIcon(), func() {
++		logout()
+ 	})
+-
+ 	buttonExit := widget.NewButtonWithIcon("Exit", theme.CancelIcon(), func() {
+-		log.Println("Tapped exit")
+ 		myApp.Quit()
+ 	})
+ 
+-	infoGrid := container.New(layout.NewGridLayout(1), label1, label2)
+-	subGrid := container.New(layout.NewGridLayout(1), infoGrid, buttonPlay, buttonExit)
+-	grid := container.New(layout.NewVBoxLayout(), headerImage(), subGrid, clientLayout)
++	subGrid := container.New(layout.NewGridLayout(1), label1, buttonPlay, buttonLogout, buttonExit)
++	grid := container.New(layout.NewVBoxLayout(), headerImage(), subGrid)
+ 	myWindow.SetContent(grid)
+ }
+ 
+ func headerImage() *canvas.Image {
+ 	image := canvas.NewImageFromFile("assets/header.png")
+ 	image.FillMode = canvas.ImageFillContain
+-	image.SetMinSize(fyne.Size{
+-		Height: 140,
+-	})
++	image.SetMinSize(fyne.Size{Height: 140})
+ 	return image
+ }
+ 
+-func handlePlay(windowed bool, instances int, res string) {
+-	params := []string{fmt.Sprintf("-token=%s", myToken), fmt.Sprintf("-frontend_api=%s", iniCfg.Section("").Key("frontend_api").String())}
++func handlePlay() {
++	const instances = 1
+ 
+-	if windowed {
+-		params = append(params, "-WINDOWED")
+-
+-		res := strings.Split(res, "x")
+-		params = append(params, fmt.Sprintf("-ResX=%s", res[0]))
+-		params = append(params, fmt.Sprintf("-ResY=%s", res[1]))
++	gamiraAPI := iniCfg.Section("").Key("gamira_url").String()
++	frontendAPI := gamiraAPI // Legacy Blueprint argument name; now points directly at Gamira.
++	params := []string{
++		fmt.Sprintf("-token=%s", myToken),
++		fmt.Sprintf("-gamira_api=%s", gamiraAPI),
++	}
++	if frontendAPI != "" {
++		params = append(params, fmt.Sprintf("-frontend_api=%s", frontendAPI))
++	} else {
++		log.Printf("Warning: gamira_url is not configured")
+ 	}
+ 
+-	for i := 0; i < instances; i++ {
+-		go func() {
+-			// Get the binary file from the ini
+-			cmd := exec.Command(iniCfg.Section(runtime.GOOS).Key("binary").String(), params...)
+-			log.Printf("[%d] Launching: %s %s", i, iniCfg.Section(runtime.GOOS).Key("binary").String(), params)
++	params = append(params, "-WINDOWED", "-ResX=320", "-ResY=240")
+ 
++	binary := iniCfg.Section(runtime.GOOS).Key("binary").String()
++	for i := 0; i < instances; i++ {
++		go func(idx int) {
++			cmd := exec.Command(binary, params...)
++			cmd.Env = append(os.Environ(),
++				"DISPLAY="+getDisplay(),
++				"VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json",
++			)
++			log.Printf("[%d] Launching: %s", idx, binary)
+ 			output, err := cmd.CombinedOutput()
+ 			if err != nil {
+-				log.Printf("[%d] Error: %s", i, err)
++				log.Printf("[%d] Error: %s", idx, err)
++				printCrashLog(binary, idx)
+ 			} else {
+-				log.Printf("[%d] Unreal output: %s", i, output)
++				log.Printf("[%d] Output: %s", idx, output)
+ 			}
+-		}()
++		}(i)
++		if i < instances-1 {
++			time.Sleep(3 * time.Second)
++		}
+ 	}
+-
+ }
+ 
+-func getPlayerName() string {
+-	log.Printf("Getting player info")
+-
+-	req, err := http.NewRequest("GET", iniCfg.Section("").Key("frontend_api").String()+"/profile", nil)
+-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", myToken))
+-
++// getPlayerName calls gamira's /players/me endpoint and returns the player's
++// display name (falls back to player_id if display_name is unset).
++func getPlayerName() (string, error) {
++	gamiraAPI := iniCfg.Section("").Key("gamira_url").String()
++	req, err := http.NewRequest(http.MethodGet, gamiraAPI+"/players/me", nil)
+ 	if err != nil {
+-		log.Fatal("Unable to initiate request to game api. Connection issues?")
++		return "", err
+ 	}
++	req.Header.Set("x-token", myToken)
+ 
+-	client := &http.Client{}
+-	response, err := client.Do(req)
+-
++	resp, err := httpClient.Do(req)
+ 	if err != nil {
+-		log.Fatal(err)
++		return "", err
+ 	}
+-	defer response.Body.Close()
+-	data, err := io.ReadAll(response.Body)
++	defer resp.Body.Close()
++
++	data, err := io.ReadAll(resp.Body)
+ 	if err != nil {
+-		log.Fatal(err)
++		return "", err
+ 	}
+-
+-	if response.StatusCode != 200 {
+-		log.Fatalf("Unable to fetch user information. Expired token?: %s", data)
++	if resp.StatusCode != http.StatusOK {
++		return "", fmt.Errorf("get player failed (status %d): %s", resp.StatusCode, data)
+ 	}
+ 
+ 	var result map[string]interface{}
+ 	if err := json.Unmarshal(data, &result); err != nil {
+-		log.Fatalf("Unable to decode json: %s", err)
++		return "", fmt.Errorf("decode player: %w", err)
+ 	}
+ 
+-	return result["player_name"].(string)
++	if name, ok := result["display_name"].(string); ok && name != "" {
++		return name, nil
++	}
++	if id, ok := result["player_id"].(string); ok && id != "" {
++		return id, nil
++	}
++	return "Player", nil
++}
++
++// printCrashLog finds the most recently modified UE5 log in the game's
++// Saved/Logs dir and prints its last 80 lines — the log rotates per instance
++// so we grab the newest one written around crash time.
++func printCrashLog(binary string, idx int) {
++	logDir := filepath.Join(filepath.Dir(binary), "Droidshooter", "Saved", "Logs")
++	entries, err := os.ReadDir(logDir)
++	if err != nil {
++		log.Printf("[%d] crash log dir not found: %s", idx, logDir)
++		return
++	}
++	// sort by mod time descending, pick newest
++	sort.Slice(entries, func(i, j int) bool {
++		fi, _ := entries[i].Info()
++		fj, _ := entries[j].Info()
++		return fi.ModTime().After(fj.ModTime())
++	})
++	for _, e := range entries {
++		if e.IsDir() || !strings.HasSuffix(e.Name(), ".log") {
++			continue
++		}
++		path := filepath.Join(logDir, e.Name())
++		data, err := os.ReadFile(path)
++		if err != nil {
++			continue
++		}
++		lines := strings.Split(string(data), "\n")
++		start := len(lines) - 80
++		if start < 0 {
++			start = 0
++		}
++		log.Printf("[%d] crash log (%s):\n%s", idx, e.Name(), strings.Join(lines[start:], "\n"))
++		return
++	}
++	log.Printf("[%d] no crash log found in %s", idx, logDir)
++}
++
++func getDisplay() string {
++	if d := os.Getenv("DISPLAY"); d != "" {
++		return d
++	}
++	return ":0"
+ }
+ 
+ func openBrowser(url string) {
+ 	var err error
+-
+ 	switch runtime.GOOS {
+ 	case "linux":
+ 		err = exec.Command("xdg-open", url).Start()
+@@ -254,13 +437,10 @@ func openBrowser(url string) {
+ 
+ func saveToken(token string) {
+ 	dirname, err := os.UserHomeDir()
+-	filename := dirname + "/droidshooter.jwt"
+-
+ 	if err != nil {
+ 		log.Fatal(err)
+ 	}
+-
+-	err = os.WriteFile(filename, []byte(token), 0644)
++	err = os.WriteFile(dirname+"/droidshooter.jwt", []byte(token), 0600)
+ 	if err != nil {
+ 		log.Fatal(err)
+ 	}
+@@ -268,27 +448,24 @@ func saveToken(token string) {
+ 
+ func loadToken() bool {
+ 	dirname, err := os.UserHomeDir()
+-	filename := dirname + "/droidshooter.jwt"
+-
+ 	if err != nil {
+ 		log.Fatal(err)
+ 	}
++	filename := dirname + "/droidshooter.jwt"
+ 
+ 	data, err := os.ReadFile(filename)
+ 	if err != nil {
+ 		return false
+ 	}
+ 
+-	file, err := os.Stat(filename)
++	fi, err := os.Stat(filename)
+ 	if err != nil {
+ 		log.Fatal(err)
+ 	}
+-
+-	modifiedtime := file.ModTime()
+-	in30Days := time.Now().Add(24 * time.Hour * 30)
+-
+-	if modifiedtime.After(in30Days) {
+-		log.Printf("Token is old. Deleting.")
++	// JWT tokens from auth-demo expire in 1 hour; treat any file older than
++	// 90 minutes as stale so we don't attempt to use an expired token.
++	if time.Since(fi.ModTime()) > 90*time.Minute {
++		log.Printf("Saved token is stale, removing")
+ 		os.Remove(filename)
+ 		return false
+ 	}
+diff --git a/global-multiplayer-demo/game/README.md b/global-multiplayer-demo/game/README.md
+index b27f3f3c3ff71c7394e12f72e68ba2a53d44b835..c41d968976f8805491473abec7ef7dbc690b5fd2 100644
+--- a/global-multiplayer-demo/game/README.md
++++ b/global-multiplayer-demo/game/README.md
+@@ -1,34 +1,13 @@
+-# Droidshooter
++# Droidshooter client with Gamira
+ 
+-This is the Unreal Engine 5.1.0 project for the DroidShooter game!
++In `GameLauncher/`, copy `app.ini.sample` to `app.ini`. Set `gamira_url` and
++`platform_url` to the public Gamira API and authentication platform base URLs.
++The platform URL does not include `/api/v1`. Set the executable path for your OS.
++The game client talks directly to Gamira; no frontend proxy or local cluster
++is included or required. Services and game servers are operated separately.
+ 
+-## Local Builds
++Build the client with the upstream Unreal Engine 5 workflow. In `GameLauncher/`,
++run `go build -o launcher .` and start `./launcher` from that directory.
++No admin credentials belong in the client configuration.
+ 
+-## Dedicated Game Server Docker Image
+-
+-```shell
+-docker build . -t droidshooter-server
+-```
+-
+-To run, you will need a copy of Agones [local SDK](https://agones.dev/site/docs/guides/client-sdks/local/) toolkit.
+-
+-In one shell, start the local testing SDK server:
+-
+-```shell
+-./sdk-server.linux.amd64 --local
+-```
+-
+-Then in another shell:
+-
+-```shell
+-docker run --rm --network=host droidshooter-server:latest
+-```
+-
+-(In non *nix OS's where Docker is not native, you may need to do a slightly different network configuration to get the
+-same experience)
+-
+-You now have a dedicated game server running on 127.0.0.1:7777
+-
+-## Client building
+-
+-See the top level [README.md](../README.md#game-client) game client section for full launch instructions.
++Upstream: https://github.com/googleforgames/global-multiplayer-demo (Apache-2.0).
+diff --git a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp
+index 30a679114112b2ecb7d80f7a12b4d9dc5ca5f7f6..3c0a52781d5abab70ab90c528248f8636469f409 100644
+--- a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp
++++ b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.cpp
+@@ -19,275 +19,219 @@
+ #include "Components/TextBlock.h"
+ #include "Components/EditableTextBox.h"
+ #include "Components/Button.h"
++#include "Blueprint/WidgetTree.h"
+ #include "Droidshooter.h"
+ #include "Json.h"
++#include "Engine/World.h"
+ 
+-void UDroidshooterIntroUserWidget::NativePreConstruct() 
++namespace
+ {
+-    Super::NativePreConstruct();
+-    // B_Auth->OnClicked.AddDynamic(this, &UDroidshooterIntroUserWidget::AuthenticateCall);
++TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GamiraRequest(
++    const FString& Base, const FString& Token, const FString& Path, const FString& Verb)
++{
++    auto Request = FHttpModule::Get().CreateRequest();
++    Request->SetURL(Base + Path);
++    Request->SetVerb(Verb);
++    Request->SetHeader(TEXT("x-token"), Token);
++    Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
++    Request->SetTimeout(10.0f);
++    return Request;
+ }
+-
+-void UDroidshooterIntroUserWidget::FindPreferredGameServerLocation(const FString& frontendApi, const FString& accessToken)
++bool ReadObject(const FString& Text, TSharedPtr<FJsonObject>& Object)
+ {
+-    // Query game server list
+-    // Ping each server
+-    // Create timer to check if all values have been updated
+-    // Save best region
+-    // Query FetchGameServer 
+-
+-    UE_LOG(LogDroidshooter, Log, TEXT("Fetch regions to ping with token: %s"), *accessToken);
+-
+-    FString uriPlay = frontendApi + TEXT("/ping");
+-
+-    FHttpModule& httpModule = FHttpModule::Get();
+-    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> pRequest = httpModule.CreateRequest();
+-
+-    pRequest->SetHeader("Authorization", "Bearer " + accessToken);
+-    pRequest->SetVerb(TEXT("GET"));
+-    pRequest->SetURL(uriPlay);
+-
+-    // Set the callback, which will execute when the HTTP call is complete
+-    pRequest->OnProcessRequestComplete().BindLambda(
+-        [&](
+-            FHttpRequestPtr pRequest,
+-            FHttpResponsePtr pResponse,
+-            bool connectedSuccessfully) mutable {
+-
+-                if (connectedSuccessfully) {
+-                    ProcessServersToPingResponse(pResponse->GetContentAsString());
+-                }
+-                else {
+-                    switch (pRequest->GetStatus()) {
+-                    case EHttpRequestStatus::Failed_ConnectionError:
+-                        UE_LOG(LogDroidshooter, Log, TEXT("Connection failed."));
+-                    default:
+-                        UE_LOG(LogDroidshooter, Log, TEXT("Request failed."));
+-                    }
+-                }
+-        });
+-
+-    // Finally, submit the request for processing
+-    pRequest->ProcessRequest();
++    return FJsonSerializer::Deserialize(TJsonReaderFactory<TCHAR>::Create(Text), Object) && Object.IsValid();
+ }
+-
+-void UDroidshooterIntroUserWidget::AuthenticateCall(const FString& frontendApi, const FString& accessToken)
++bool RequestOK(const FHttpResponsePtr& Response, bool Connected)
+ {
+-    UE_LOG(LogDroidshooter, Log, TEXT("Auth call with token: %s"), *accessToken);
+-
+-	FString uriProfile = frontendApi + TEXT("/profile");
+-
+-	FHttpModule& httpModule = FHttpModule::Get();
+-    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> pRequest = httpModule.CreateRequest();
+-
+-    pRequest->SetVerb(TEXT("GET"));
+-    pRequest->SetHeader("Authorization", "Bearer " + accessToken);
+-    pRequest->SetURL(uriProfile);
+-
+-    pRequest->OnProcessRequestComplete().BindLambda(
+-        [&](
+-            FHttpRequestPtr pRequest,
+-            FHttpResponsePtr pResponse,
+-            bool connectedSuccessfully) mutable {
++    return Connected && Response.IsValid() && Response->GetResponseCode() >= 200 && Response->GetResponseCode() < 300;
++}
++}
+ 
+-                if (connectedSuccessfully) {
+-                    ProcessProfileResponse(pResponse->GetContentAsString());
+-                }
+-                else {
+-                    switch (pRequest->GetStatus()) {
+-                    case EHttpRequestStatus::Failed_ConnectionError:
+-                        UE_LOG(LogDroidshooter, Log, TEXT("Connection failed."));
+-                    default:
+-                        UE_LOG(LogDroidshooter, Log, TEXT("Request failed."));
+-                    }
+-                }
+-        });
++void UDroidshooterIntroUserWidget::NativePreConstruct()
++{
++    Super::NativePreConstruct();
++}
+ 
+-    // Finally, submit the request for processing
+-    pRequest->ProcessRequest();
++void UDroidshooterIntroUserWidget::NativeConstruct()
++{
++    Super::NativeConstruct();
++    if (NameTextBlock) NameTextBlock->RemoveFromParent();
++    if (B_FreeFlyMode) B_FreeFlyMode->RemoveFromParent();
+ }
+ 
+-void UDroidshooterIntroUserWidget::FetchGameServer(const FString& frontendApi, const FString& accessToken, std::map<float, FString> servers)
++void UDroidshooterIntroUserWidget::NativeDestruct()
+ {
+-    UE_LOG(LogDroidshooter, Log, TEXT("Fetch server/ip call with token: %s"), *accessToken);
+-    
+-    TSharedRef<FJsonObject> JsonRootObject = MakeShareable(new FJsonObject);
+-    TSharedRef<FJsonObject> JsonBodyObject = MakeShareable(new FJsonObject);
+-    TArray<TSharedPtr<FJsonValue>>  JsonServerArray;
++    CancelTicket();
++    Super::NativeDestruct();
++}
+ 
+-    for (auto it = servers.begin(); it != servers.end(); ++it)
++void UDroidshooterIntroUserWidget::AuthenticateCall(const FString& frontendApi, const FString& accessToken)
++{
++    // frontendApi is the existing Blueprint pin name; it now carries the Gamira URL.
++    FString Base = frontendApi;
++    Base.RemoveFromEnd(TEXT("/"));
++    auto Request = GamiraRequest(Base, accessToken, TEXT("/players/me"), TEXT("GET"));
++    TWeakObjectPtr<UDroidshooterIntroUserWidget> WeakThis(this);
++    Request->OnProcessRequestComplete().BindLambda([WeakThis](FHttpRequestPtr, FHttpResponsePtr Response, bool Connected)
+     {
+-        UE_LOG(LogDroidshooter, Log, TEXT("Ping responses: %.2f %s "), it->first, *it->second);
+-        JsonBodyObject->Values.Add(it->second, MakeShareable(new FJsonValueNumber(static_cast<int32>(it->first))));
+-    }
+-
+-    JsonRootObject->SetObjectField("pingByRegion", JsonBodyObject);    
+-
+-    FString OutputString;
+-    TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
+-    FJsonSerializer::Serialize(JsonRootObject, Writer);
+-
+-    FString uriPlay = frontendApi + TEXT("/play");
+-
+-    FHttpModule& httpModule = FHttpModule::Get();
+-    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> pRequest = httpModule.CreateRequest();
+-
+-    pRequest->SetHeader("Authorization", "Bearer " + accessToken);
+-    pRequest->SetVerb(TEXT("POST"));
+-    pRequest->SetURL(uriPlay);
+-    pRequest->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+-    pRequest->SetHeader("Content-Type", TEXT("application/json"));
+-    pRequest->SetHeader(TEXT("Accepts"), TEXT("application/json"));
+-
+-    pRequest->SetContentAsString(OutputString);
+-
+-    // Set the callback, which will execute when the HTTP call is complete
+-    pRequest->OnProcessRequestComplete().BindLambda(
+-        [&](
+-            FHttpRequestPtr pRequest,
+-            FHttpResponsePtr pResponse,
+-            bool connectedSuccessfully) mutable {
+-
+-                if (connectedSuccessfully) {
+-                    /*std::function<void(const TSharedPtr<FJsonObject>&)> f = [=](const TSharedPtr<FJsonObject>& JsonResponseObject) {
+-                        // do stuff here or call a method
+-                    };*/
+-                    ProcessGameserverResponse(pResponse->GetContentAsString());
+-                }
+-                else {
+-                    switch (pRequest->GetStatus()) {
+-                    case EHttpRequestStatus::Failed_ConnectionError:
+-                        UE_LOG(LogDroidshooter, Log, TEXT("Connection failed."));
+-                    default:
+-                        UE_LOG(LogDroidshooter, Log, TEXT("Request failed."));
+-                    }
+-                }
+-        });
+-
+-    // Finally, submit the request for processing
+-    pRequest->ProcessRequest();
++        if (!WeakThis.IsValid()) return;
++        if (RequestOK(Response, Connected)) WeakThis->ProcessProfileResponse(Response->GetContentAsString());
++        else UE_LOG(LogDroidshooter, Warning, TEXT("Gamira profile request failed"));
++    });
++    Request->ProcessRequest();
+ }
+ 
+-void UDroidshooterIntroUserWidget::ProcessProfileResponse(const FString& ResponseContent)
++void UDroidshooterIntroUserWidget::FindPreferredGameServerLocation(const FString& frontendApi, const FString& accessToken)
+ {
+-    TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(ResponseContent);
+-    TSharedPtr<FJsonObject> JsonResponseObject;
+-
+-    if (FJsonSerializer::Deserialize(JsonReader, JsonResponseObject))
++    if (bMatchmaking) return;
++    FrontendApi = frontendApi;
++    FrontendApi.RemoveFromEnd(TEXT("/"));
++    GlobalAccessToken = accessToken;
++    bMatchmaking = true;
++    RegionEndpoints.Empty();
++    RegionLatencies.Empty();
++    auto Request = GamiraRequest(FrontendApi, GlobalAccessToken, TEXT("/regions?limit=200"), TEXT("GET"));
++    TWeakObjectPtr<UDroidshooterIntroUserWidget> WeakThis(this);
++    Request->OnProcessRequestComplete().BindLambda([WeakThis](FHttpRequestPtr, FHttpResponsePtr Response, bool Connected)
+     {
+-        if (JsonResponseObject)
++        if (!WeakThis.IsValid()) return;
++        if (!RequestOK(Response, Connected))
+         {
+-            FString Name = JsonResponseObject->GetStringField(TEXT("player_name"));
+-
+-            if (Name.Len() != 0) {
+-                //UE_LOG(LogDroidshooter, Log, TEXT("Logged in player is: %s"), "yes");
+-                UE_LOG(LogDroidshooter, Log, TEXT("Logged in player is: %s"), *Name);
+-
+-                NameTextBlock->SetText(FText::FromString(Name));
+-            }
+-            else {
+-                UE_LOG(LogDroidshooter, Log, TEXT("Unable to fetch player data. Timed out token?"));
++            WeakThis->bMatchmaking = false;
++            UE_LOG(LogDroidshooter, Warning, TEXT("Gamira region discovery failed"));
++            return;
++        }
++        TSharedPtr<FJsonObject> Root;
++        const TArray<TSharedPtr<FJsonValue>>* Regions = nullptr;
++        if (!ReadObject(Response->GetContentAsString(), Root) || !Root->TryGetArrayField(TEXT("items"), Regions))
++        {
++            WeakThis->bMatchmaking = false;
++            UE_LOG(LogDroidshooter, Warning, TEXT("Invalid Gamira regions response"));
++            return;
++        }
++        for (const auto& Value : *Regions)
++        {
++            const TSharedPtr<FJsonObject>* Region = nullptr;
++            if (!Value.IsValid() || !Value->TryGetObject(Region)) continue;
++            FString ID, Endpoint;
++            if (!(*Region)->TryGetStringField(TEXT("region_id"), ID) || ID.IsEmpty()) continue;
++            // Regional discovery uses a conservative placeholder when no ping probe is available.
++            WeakThis->RegionLatencies.Add(ID, 50.0);
++            if ((*Region)->TryGetStringField(TEXT("api_endpoint"), Endpoint) && !Endpoint.IsEmpty())
++            {
++                Endpoint.RemoveFromEnd(TEXT("/"));
++                WeakThis->RegionEndpoints.Add(ID, Endpoint);
+             }
+-
+         }
+-    }
++        WeakThis->FetchGameServer(WeakThis->FrontendApi, WeakThis->GlobalAccessToken, {});
++    });
++    Request->ProcessRequest();
+ }
+ 
+-void UDroidshooterIntroUserWidget::ProcessGameserverResponse(const FString& ResponseContent) 
++void UDroidshooterIntroUserWidget::FetchGameServer(const FString& frontendApi, const FString& accessToken, std::map<float, FString> servers)
+ {
+-    TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(ResponseContent);
+-    TSharedPtr<FJsonObject> JsonResponseObject;
+-
+-    if (FJsonSerializer::Deserialize(JsonReader, JsonResponseObject))
++    auto Latencies = MakeShared<FJsonObject>();
++    for (const auto& Pair : RegionLatencies) Latencies->SetNumberField(Pair.Key, Pair.Value);
++    auto Body = MakeShared<FJsonObject>();
++    Body->SetStringField(TEXT("game_mode_id"), TEXT("gm_arena"));
++    Body->SetObjectField(TEXT("ping_latencies"), Latencies);
++    FString Payload;
++    FJsonSerializer::Serialize(Body.ToSharedRef(), TJsonWriterFactory<>::Create(&Payload));
++    auto Request = GamiraRequest(frontendApi, accessToken, TEXT("/matchmaking/tickets"), TEXT("POST"));
++    Request->SetContentAsString(Payload);
++    MatchDeadline = FPlatformTime::Seconds() + 90.0;
++    TWeakObjectPtr<UDroidshooterIntroUserWidget> WeakThis(this);
++    Request->OnProcessRequestComplete().BindLambda([WeakThis](FHttpRequestPtr, FHttpResponsePtr Response, bool Connected)
+     {
+-        if (JsonResponseObject)
++        if (!WeakThis.IsValid()) return;
++        if (RequestOK(Response, Connected)) WeakThis->ProcessGameserverResponse(Response->GetContentAsString());
++        else
+         {
+-            FString IP = JsonResponseObject->GetStringField(TEXT("IP"));
+-            FString Port = JsonResponseObject->GetStringField(TEXT("Port"));
+-
+-            if (IP.Len() != 0 && Port.Len() != 0) {
+-                // Set IP - Port variables!
+-                ServerIPValue = IP;
+-                ServerPortValue = Port;
+-
+-                ServerIPBox->SetText(FText::FromString(IP));
+-                ServerPortBox->SetText(FText::FromString(Port));
+-
+-                UE_LOG(LogDroidshooter, Log, TEXT("Found game server at: %s %s"), *IP, *Port);
+-
+-                UFunction* Function = this->FindFunction("ConnectToOnlineGame");
+-
+-                if (Function == nullptr)
+-                {
+-                    return;
+-                }
+-
+-                this->ProcessEvent(Function, {});
+-            }
+-            else {
+-                UE_LOG(LogDroidshooter, Log, TEXT("Unable to server player data. Timed out token?"));
+-            }
++            WeakThis->bMatchmaking = false;
++            UE_LOG(LogDroidshooter, Warning, TEXT("Gamira ticket creation failed"));
+         }
+-    }
++    });
++    Request->ProcessRequest();
+ }
+ 
+-void UDroidshooterIntroUserWidget::ProcessServersToPingResponse(const FString& ResponseContent)
++void UDroidshooterIntroUserWidget::PollTicket()
+ {
+-
+-    TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(ResponseContent);
+-    TArray<TSharedPtr<FJsonValue>> JsonResponseArray;
+-    TSharedPtr<FJsonObject> JsonTopObject;
+-
+-    if (FJsonSerializer::Deserialize(JsonReader, JsonTopObject))
++    if (TicketId.IsEmpty()) return;
++    if (FPlatformTime::Seconds() >= MatchDeadline)
+     {
+-        ServerPinger.SetServersToValidate(JsonTopObject->Values.Num());
+-
+-        for (auto JsonResponseObject = JsonTopObject->Values.CreateConstIterator(); JsonResponseObject; ++JsonResponseObject) {
+-            const FString KName = (*JsonResponseObject).Key;
+-
+-            // Get the value as a FJsonValue object
+-            TSharedPtr< FJsonValue > Value = (*JsonResponseObject).Value;
+-
+-            TSharedPtr<FJsonObject> JsonObjectIn = Value->AsObject();
+-
+-            if (JsonObjectIn)
+-            {
+-                FString Name = JsonObjectIn->GetStringField(TEXT("Name"));
+-                FString Region = JsonObjectIn->GetStringField(TEXT("Region"));
+-                FString Address = JsonObjectIn->GetStringField(TEXT("Address"));
+-                FString Protocol = JsonObjectIn->GetStringField(TEXT("Protocol"));
+-                FString Port = JsonObjectIn->GetStringField(TEXT("Port"));
+-
+-                UE_LOG(LogDroidshooter, Log, TEXT("Gonna ping: %s %s %s %s %s (%s)"), *Name, *Region, *Address, *Protocol, *Port, *KName);
+-                ServerPinger.CheckIfServerIsOnline(Address, Port, KName);
+-            }
+-        }
++        CancelTicket();
++        UE_LOG(LogDroidshooter, Warning, TEXT("Gamira matchmaking timed out"));
++        return;
+     }
+-
+-    GetWorld()->GetTimerManager().SetTimer(MemberTimerHandle, this, &UDroidshooterIntroUserWidget::AllServersValidated, 1.0f, true, 3.0f);
++    const FString Base = RegionEndpoints.Contains(TicketRegion) ? RegionEndpoints[TicketRegion] : FrontendApi;
++    auto Request = GamiraRequest(Base, GlobalAccessToken, TEXT("/matchmaking/tickets/") + TicketId, TEXT("GET"));
++    TWeakObjectPtr<UDroidshooterIntroUserWidget> WeakThis(this);
++    Request->OnProcessRequestComplete().BindLambda([WeakThis](FHttpRequestPtr, FHttpResponsePtr Response, bool Connected)
++    {
++        if (!WeakThis.IsValid()) return;
++        if (RequestOK(Response, Connected)) WeakThis->ProcessGameserverResponse(Response->GetContentAsString());
++        else
++        {
++            WeakThis->CancelTicket();
++            UE_LOG(LogDroidshooter, Warning, TEXT("Gamira ticket polling failed"));
++        }
++    });
++    Request->ProcessRequest();
+ }
+ 
+-/*
+-* Generic handler for json that calls func() passed to it
+-*/
+-void UDroidshooterIntroUserWidget::ProcessGenericJsonResponse(const FString& ResponseContent, std::function<void(const TSharedPtr<FJsonObject>&)>& func)
++void UDroidshooterIntroUserWidget::CancelTicket()
+ {
+-    TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(ResponseContent);
+-    TSharedPtr<FJsonObject> JsonObject;
+-
+-    if (FJsonSerializer::Deserialize(JsonReader, JsonObject))
++    if (GetWorld()) GetWorld()->GetTimerManager().ClearTimer(MemberTimerHandle);
++    if (!TicketId.IsEmpty())
+     {
+-        func(JsonObject);
++        const FString Base = RegionEndpoints.Contains(TicketRegion) ? RegionEndpoints[TicketRegion] : FrontendApi;
++        GamiraRequest(Base, GlobalAccessToken, TEXT("/matchmaking/tickets/") + TicketId, TEXT("DELETE"))->ProcessRequest();
+     }
++    TicketId.Empty();
++    TicketRegion.Empty();
++    bMatchmaking = false;
+ }
+ 
+-void UDroidshooterIntroUserWidget::AllServersValidated()
++void UDroidshooterIntroUserWidget::ProcessProfileResponse(const FString& ResponseContent)
+ {
+-    if (ServerPinger.AllServersValidated()) {
+-        auto servers = ServerPinger.GetPingedServers();
++    TSharedPtr<FJsonObject> Root;
++    FString Name;
++    if (ReadObject(ResponseContent, Root) && Root->TryGetStringField(TEXT("display_name"), Name) && NameTextBlock)
++        NameTextBlock->SetText(FText::FromString(Name));
++}
+ 
+-        FetchGameServer(FrontendApi, GlobalAccessToken, servers);
+-        ServerPinger.ClearPingedServers();
+-        GetWorld()->GetTimerManager().ClearTimer(MemberTimerHandle);
++void UDroidshooterIntroUserWidget::ProcessGameserverResponse(const FString& ResponseContent)
++{
++    TSharedPtr<FJsonObject> Root;
++    FString ID, Status;
++    if (!ReadObject(ResponseContent, Root) || !Root->TryGetStringField(TEXT("ticket_id"), ID) || ID.IsEmpty())
++    {
++        CancelTicket();
++        return;
++    }
++    for (TCHAR C : ID)
++    {
++        if (!FChar::IsAlnum(C) && C != TEXT('-') && C != TEXT('_')) { CancelTicket(); return; }
++    }
++    TicketId = ID;
++    Root->TryGetStringField(TEXT("region_id"), TicketRegion);
++    Root->TryGetStringField(TEXT("status"), Status);
++    if (Status == TEXT("cancelled")) { CancelTicket(); return; }
++    const TSharedPtr<FJsonObject>* Connection = nullptr;
++    FString IP;
++    double Port = 0;
++    if (Status == TEXT("matched") && Root->TryGetObjectField(TEXT("connection"), Connection)
++        && (*Connection)->TryGetStringField(TEXT("ip"), IP) && !IP.IsEmpty()
++        && (*Connection)->TryGetNumberField(TEXT("port"), Port) && Port >= 1 && Port <= 65535)
++    {
++        TicketId.Empty(); // A matched ticket is not cancelled when the widget is destroyed.
++        bMatchmaking = false;
++        ServerIPValue = IP;
++        ServerPortValue = FString::FromInt(static_cast<int32>(Port));
++        if (ServerIPBox) ServerIPBox->SetText(FText::FromString(ServerIPValue));
++        if (ServerPortBox) ServerPortBox->SetText(FText::FromString(ServerPortValue));
++        if (UFunction* Function = FindFunction(TEXT("ConnectToOnlineGame"))) ProcessEvent(Function, nullptr);
++        return;
+     }
++    if (GetWorld()) GetWorld()->GetTimerManager().SetTimer(MemberTimerHandle, this, &UDroidshooterIntroUserWidget::PollTicket, 0.5f, false);
+ }
+diff --git a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h
+index 5ffe5ff04ec40b4b89e98d14f44c35eeaa6d8549..c18f6090ff08f09afb491024bce2c6a671594231 100644
+--- a/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h
++++ b/global-multiplayer-demo/game/Source/Droidshooter/DroidshooterIntroUserWidget.h
+@@ -17,7 +17,7 @@
+ #include "CoreMinimal.h"
+ #include "TimerManager.h" 
+ #include "Blueprint/UserWidget.h"
+-#include "DroidshooterServerPing.h"
++#include <map>
+ #include "DroidshooterIntroUserWidget.generated.h"
+ 
+ /**
+@@ -31,6 +31,8 @@ class DROIDSHOOTER_API UDroidshooterIntroUserWidget : public UUserWidget
+ public:
+ 
+ 	void NativePreConstruct();
++	virtual void NativeConstruct() override;
++	virtual void NativeDestruct() override;
+ 
+ 	UFUNCTION(BlueprintCallable)
+ 	void AuthenticateCall(const FString& frontendApi, const FString& accessToken);
+@@ -43,10 +45,6 @@ public:
+ 
+ 	void ProcessProfileResponse(const FString& ResponseContent);
+ 	void ProcessGameserverResponse(const FString& ResponseContent);
+-	void ProcessServersToPingResponse(const FString& ResponseContent);
+-	void ProcessGenericJsonResponse(const FString& ResponseContent, std::function<void(const TSharedPtr<FJsonObject>&)>& func);
+-
+-	void AllServersValidated();
+ 
+ 	// Server IP/Port editboxes
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+@@ -58,6 +56,9 @@ public:
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+ 	class UTextBlock* NameTextBlock;
+ 
++	UPROPERTY(meta = (BindWidgetOptional))
++	class UButton* B_FreeFlyMode;
++
+ 	/** Saving token for further queries */
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+ 	FString GlobalAccessToken;
+@@ -75,8 +76,13 @@ public:
+ 	FString ServerPortValue;
+ 
+ private:
+-
+-	FTimerHandle MemberTimerHandle;
+-	DroidshooterServerPing ServerPinger;
+-
++    void PollTicket();
++    void CancelTicket();
++    FTimerHandle MemberTimerHandle;
++    TMap<FString, FString> RegionEndpoints;
++    TMap<FString, double> RegionLatencies;
++    FString TicketId;
++    FString TicketRegion;
++    double MatchDeadline = 0.0;
++    bool bMatchmaking = false;
+ };
